@@ -173,6 +173,24 @@ let ladder = [
         role: "TOP",
         inGame: false,
     },
+    {
+        name: "Maes277",
+        id: undefined,
+        rank: undefined,
+        tier: undefined,
+        leaguePoints: undefined,
+        role: "SUPPORT",
+        inGame: false,
+    },
+    {
+        name: "SP Mokzs",
+        id: undefined,
+        rank: undefined,
+        tier: undefined,
+        leaguePoints: undefined,
+        role: "SUPPORT",
+        inGame: false,
+    },
 ];
 
 let updateChannels = ["broyz-ladder"];
@@ -245,6 +263,7 @@ async function updateSummonerData(summoner) {
                 RIOT_API_OPTIONS
             )
             .then((response) => {
+                summoner.name = response.data.name;
                 summoner.id = response.data.id;
             })
             .catch((error) => {
@@ -352,7 +371,7 @@ function showLadder(channels, message) {
                 ladderStr += " " + summoner.rank;
             }
             ladderStr += getEmoji(summoner.tier);
-            if (summoner.leaguePoints) {
+            if (summoner.leaguePoints != undefined) {
                 ladderStr += " " + summoner.leaguePoints + "LP";
             }
             let ladderLastStateOfSummoner = ladderLastState.filter(
