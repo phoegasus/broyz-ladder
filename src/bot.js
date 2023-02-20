@@ -15,6 +15,7 @@ const client = new Client({
 const RIOT_SERVER_URL = "https://euw1.api.riotgames.com";
 const RIOT_SUMMONER_ENDPOINT = "/lol/summoner/v4/summoners/by-name/";
 const RIOT_LEAGUE_ENDPOINT = "/lol/league/v4/entries/by-summoner/";
+const RIOT_SPECTATOR_ENDPOINT = "/lol/spectator/v4/active-games/by-summoner/";
 
 const RIOT_API_OPTIONS = {
     headers: {
@@ -35,6 +36,7 @@ let ladder = [
         tier: undefined,
         leaguePoints: undefined,
         role: "SUPPORT",
+        inGame: false,
     },
     {
         name: "Shaeee",
@@ -43,6 +45,7 @@ let ladder = [
         tier: undefined,
         leaguePoints: undefined,
         role: "JUNGLE",
+        inGame: false,
     },
     {
         name: "PIRATE FRANK",
@@ -51,6 +54,7 @@ let ladder = [
         tier: undefined,
         leaguePoints: undefined,
         role: "TOP",
+        inGame: false,
     },
     {
         name: "Just Gank 4Head",
@@ -59,6 +63,7 @@ let ladder = [
         tier: undefined,
         leaguePoints: undefined,
         role: "JUNGLE",
+        inGame: false,
     },
     {
         name: "yarbinmot",
@@ -67,6 +72,7 @@ let ladder = [
         tier: undefined,
         leaguePoints: undefined,
         role: "TOP",
+        inGame: false,
     },
     {
         name: "Hakuyu",
@@ -75,6 +81,7 @@ let ladder = [
         tier: undefined,
         leaguePoints: undefined,
         role: "JUNGLE",
+        inGame: false,
     },
     {
         name: "Shocksnock",
@@ -83,6 +90,7 @@ let ladder = [
         tier: undefined,
         leaguePoints: undefined,
         role: "MID",
+        inGame: false,
     },
     {
         name: "Rozeal",
@@ -91,6 +99,7 @@ let ladder = [
         tier: undefined,
         leaguePoints: undefined,
         role: "BOT",
+        inGame: false,
     },
     {
         name: "ramxix",
@@ -98,8 +107,8 @@ let ladder = [
         rank: undefined,
         tier: undefined,
         leaguePoints: undefined,
-        jungler: true,
         role: "JUNGLE",
+        inGame: false,
     },
     {
         name: "Artist Diff",
@@ -108,6 +117,7 @@ let ladder = [
         tier: undefined,
         leaguePoints: undefined,
         role: "BOT",
+        inGame: false,
     },
     {
         name: "ghi frank",
@@ -116,6 +126,7 @@ let ladder = [
         tier: undefined,
         leaguePoints: undefined,
         role: "TOP",
+        inGame: false,
     },
     {
         name: "shli7a",
@@ -124,6 +135,7 @@ let ladder = [
         tier: undefined,
         leaguePoints: undefined,
         role: "BOT",
+        inGame: false,
     },
     {
         name: "jeu dzab",
@@ -132,10 +144,11 @@ let ladder = [
         tier: undefined,
         leaguePoints: undefined,
         role: "MID",
+        inGame: false,
     },
 ];
 
-let updateChannels = ["broyz-ladder"];
+let updateChannels = ["général"];
 
 let running = false;
 
@@ -182,6 +195,7 @@ async function update() {
                 await updateSummonerData(summoner);
             }
             await updateLeagueData(summoner);
+            await updateLiveGames(summoner);
         }
     } catch (error) {
         logE(`An error has occurred in update(): ${error}`);
@@ -213,7 +227,6 @@ async function updateSummonerData(summoner) {
         logE(
             `An error has occurred in updateSummonerData(${summoner}): ${error}`
         );
-        throw error;
     }
 }
 
@@ -244,6 +257,33 @@ async function updateLeagueData(summoner) {
         logE(
             `An error has occurred in updateLeagueData(${summoner}): ${error}`
         );
+    }
+}
+
+async function updateLiveGames(summoner) {
+    log(`updateLiveGames(${summoner.name})`);
+    try {
+        await axios
+            .get(
+                RIOT_SERVER_URL + RIOT_SPECTATOR_ENDPOINT + summoner.id,
+                RIOT_API_OPTIONS
+            )
+            .then((response) => {
+                if (response.data && response.data.gameId) {
+                    summoner.inGame = true;
+                } else {
+                    summoner.inGame = false;
+                }
+            })
+            .catch((error) => {
+                if (JSON.parse(JSON.stringify(error)).status == 404) {
+                    summoner.inGame = false;
+                } else {
+                    throw error;
+                }
+            });
+    } catch (error) {
+        logE(`An error has occurred in updateLiveGames(${summoner}): ${error}`);
         throw error;
     }
 }
@@ -287,6 +327,9 @@ function showLadder(channels, message) {
                     " " +
                     (lpChange < 0 ? ":arrow_down: " : ":arrow_up: +") +
                     lpChange;
+            }
+            if (summoner.inGame) {
+                ladderStr += " - :red_circle: IN GAME";
             }
             ladderStr += "\n";
         });
