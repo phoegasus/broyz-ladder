@@ -23,7 +23,7 @@ const RIOT_API_OPTIONS = {
     },
 };
 
-const BOT_UPDATE_INTERVAL = 60 * 1000;
+const BOT_UPDATE_INTERVAL = 2 * 60 * 1000;
 const DB_UPDATE_INTERVAL = 10 * BOT_UPDATE_INTERVAL;
 
 let ladderLastState = [];
@@ -146,9 +146,36 @@ let ladder = [
         role: "MID",
         inGame: false,
     },
+    {
+        name: "Xartos",
+        id: undefined,
+        rank: undefined,
+        tier: undefined,
+        leaguePoints: undefined,
+        role: "BOT",
+        inGame: false,
+    },
+    {
+        name: "Spookky",
+        id: undefined,
+        rank: undefined,
+        tier: undefined,
+        leaguePoints: undefined,
+        role: "SUPPORT",
+        inGame: false,
+    },
+    {
+        name: "NanShen",
+        id: undefined,
+        rank: undefined,
+        tier: undefined,
+        leaguePoints: undefined,
+        role: "TOP",
+        inGame: false,
+    },
 ];
 
-let updateChannels = ["général"];
+let updateChannels = ["broyz-ladder"];
 
 let running = false;
 
@@ -269,15 +296,27 @@ async function updateLiveGames(summoner) {
                 RIOT_API_OPTIONS
             )
             .then((response) => {
-                if (response.data && response.data.gameId) {
+                if (
+                    response.data &&
+                    response.data.gameQueueConfigId &&
+                    response.data.gameQueueConfigId == 420
+                ) {
                     summoner.inGame = true;
+                    summoner.with = response.data.participants
+                        .map((participant) => participant.summonerName)
+                        .filter((name) => name != summoner.name)
+                        .filter((name) =>
+                            ladder.map((s) => s.name).includes(name)
+                        );
                 } else {
                     summoner.inGame = false;
+                    summoner.with = [];
                 }
             })
             .catch((error) => {
                 if (JSON.parse(JSON.stringify(error)).status == 404) {
                     summoner.inGame = false;
+                    summoner.with = [];
                 } else {
                     throw error;
                 }
@@ -288,11 +327,12 @@ async function updateLiveGames(summoner) {
     }
 }
 
-const SEPARATOR = "-------------------------------------------------";
+const SEPARATOR =
+    "---------------------------------------------------------------------";
 
 function showLadder(channels, message) {
     var ladderStr = SEPARATOR + "\n";
-    ladderStr += "\t\t\t\t\t\t\t\t" + message + "\n";
+    ladderStr += "\t\t\t\t\t\t\t\t\t\t\t\t" + message + "\n";
     ladderStr += SEPARATOR + "\n";
 
     ladder
@@ -330,6 +370,12 @@ function showLadder(channels, message) {
             }
             if (summoner.inGame) {
                 ladderStr += " - :red_circle: IN GAME";
+                if (summoner.with.length > 0) {
+                    ladderStr += " with";
+                    for (const name of summoner.with) {
+                        ladderStr += " " + name;
+                    }
+                }
             }
             ladderStr += "\n";
         });
