@@ -50,6 +50,13 @@ let ladder = [
         leaguePoints: undefined,
     },
     {
+        name: "Just Gank 4Head",
+        id: undefined,
+        rank: undefined,
+        tier: undefined,
+        leaguePoints: undefined,
+    },
+    {
         name: "yarbinmot",
         id: undefined,
         rank: undefined,
@@ -138,6 +145,9 @@ async function update() {
         }
     } catch (error) {
         logE(`An error has occurred in update(): ${error}`);
+        if (JSON.parse(JSON.stringify(error)).status == 429) {
+            sendMessage("Rate limit exceeded.");
+        }
     }
 
     running = false;
@@ -160,6 +170,7 @@ async function updateSummonerData(summoner) {
         logE(
             `An error has occurred in updateSummonerData(${summoner}): ${error}`
         );
+        throw error;
     }
 }
 
@@ -174,9 +185,12 @@ async function updateLeagueData(summoner) {
                 if (response.data.length == 0) {
                     summoner.tier = "UNRANKED";
                 } else {
-                    summoner.rank = response.data[0].rank;
-                    summoner.tier = response.data[0].tier;
-                    summoner.leaguePoints = response.data[0].leaguePoints;
+                    if (response.data[0].rank)
+                        summoner.rank = response.data[0].rank;
+                    if (response.data[0].tier)
+                        summoner.tier = response.data[0].tier;
+                    if (response.data[0].leaguePoints)
+                        summoner.leaguePoints = response.data[0].leaguePoints;
                 }
             })
             .catch((error) => {
@@ -186,13 +200,17 @@ async function updateLeagueData(summoner) {
         logE(
             `An error has occurred in updateLeagueData(${summoner}): ${error}`
         );
+        throw error;
     }
 }
 
 function showLadder(channels = updateChannels) {
-    var ladderStr = "";
+    var ladderStr = "------------------------------------------\n";
+    ladderStr += "\t\t\t\t\t\tLadder Update\n";
+    ladderStr += "------------------------------------------\n";
 
     ladder
+        .filter((summoner) => summoner.tier != undefined)
         .sort((summoner1, summoner2) =>
             compareSummoners(summoner1, summoner2) ? -1 : 1
         )
@@ -218,7 +236,9 @@ function showLadder(channels = updateChannels) {
             ladderStr += "\n";
         });
 
-    sendMessage(channels, ladderStr);
+    ladderStr += "------------------------------------------";
+
+    sendMessage(ladderStr, channels);
 }
 
 function compareSummoners(summoner1, summoner2) {
@@ -266,6 +286,9 @@ function getLPChangeFromTier(tierNew, tierOld) {
 }
 
 function getEmoji(tier) {
+    if (!tier) {
+        return "";
+    }
     return client.emojis.cache
         .find((emoji) => emoji.name === tier.toLowerCase())
         .toString();
@@ -308,12 +331,12 @@ function getPrefix(index) {
     }
 }
 
-function sendMessage(channelNames, message) {
+function sendMessage(message, channelNames = updateChannels) {
     getChannels(channelNames).send(message);
 }
 
 function getChannels(channelNames) {
-    client.channels.cache.find((channel) =>
+    return client.channels.cache.find((channel) =>
         channelNames.includes(channel.name)
     );
 }
