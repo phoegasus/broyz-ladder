@@ -85,6 +85,13 @@ let ladder = [
         leaguePoints: undefined,
     },
     {
+        name: "NanShen",
+        id: undefined,
+        rank: undefined,
+        tier: undefined,
+        leaguePoints: undefined,
+    },
+    {
         name: "ramxix",
         id: undefined,
         rank: undefined,
