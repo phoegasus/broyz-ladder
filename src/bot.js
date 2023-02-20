@@ -146,7 +146,6 @@ client.on("ready", (c) => {
 client.on("ready", (c) => {
     updateAndShowLadder();
     setInterval(updateAndShowLadder, BOT_UPDATE_INTERVAL);
-
     logOk(`Set update interval to ${BOT_UPDATE_INTERVAL}`);
 });
 
@@ -179,7 +178,9 @@ async function update() {
     try {
         ladderLastState = JSON.parse(JSON.stringify(ladder));
         for (let summoner of ladder) {
-            await updateSummonerData(summoner);
+            if (!summoner.id) {
+                await updateSummonerData(summoner);
+            }
             await updateLeagueData(summoner);
         }
     } catch (error) {
@@ -195,6 +196,7 @@ async function update() {
 }
 
 async function updateSummonerData(summoner) {
+    log(`updateSummonerData(${summoner.name})`);
     try {
         await axios
             .get(
@@ -216,6 +218,7 @@ async function updateSummonerData(summoner) {
 }
 
 async function updateLeagueData(summoner) {
+    log(`updateLeagueData(${summoner.name})`);
     try {
         await axios
             .get(
@@ -264,10 +267,12 @@ function showLadder(channels, message) {
                 " " +
                 getEmoji(summoner.role) +
                 " " +
-                summoner.tier +
-                getEmoji(summoner.tier);
-            if (isRanked(summoner)) {
+                summoner.tier;
+            if (summoner.rank) {
                 ladderStr += " " + summoner.rank;
+            }
+            ladderStr += getEmoji(summoner.tier);
+            if (summoner.leaguePoints) {
                 ladderStr += " " + summoner.leaguePoints + "LP";
             }
             let ladderLastStateOfSummoner = ladderLastState.filter(
