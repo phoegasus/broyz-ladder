@@ -1,6 +1,6 @@
 require("dotenv").config();
 const axios = require("axios");
-const { Client, IntentsBitField, EmbedBuilder } = require("discord.js");
+const { Client, IntentsBitField } = require("discord.js");
 const { BOT_TOKEN, RIOT_TOKEN } = process.env;
 
 const client = new Client({
@@ -34,6 +34,7 @@ let ladder = [
         rank: undefined,
         tier: undefined,
         leaguePoints: undefined,
+        role: "SUPPORT",
     },
     {
         name: "Shaeee",
@@ -41,6 +42,7 @@ let ladder = [
         rank: undefined,
         tier: undefined,
         leaguePoints: undefined,
+        role: "JUNGLE",
     },
     {
         name: "PIRATE FRANK",
@@ -48,6 +50,7 @@ let ladder = [
         rank: undefined,
         tier: undefined,
         leaguePoints: undefined,
+        role: "TOP",
     },
     {
         name: "Just Gank 4Head",
@@ -55,6 +58,7 @@ let ladder = [
         rank: undefined,
         tier: undefined,
         leaguePoints: undefined,
+        role: "JUNGLE",
     },
     {
         name: "yarbinmot",
@@ -62,6 +66,7 @@ let ladder = [
         rank: undefined,
         tier: undefined,
         leaguePoints: undefined,
+        role: "TOP",
     },
     {
         name: "Hakuyu",
@@ -69,6 +74,7 @@ let ladder = [
         rank: undefined,
         tier: undefined,
         leaguePoints: undefined,
+        role: "JUNGLE",
     },
     {
         name: "Shocksnock",
@@ -76,6 +82,7 @@ let ladder = [
         rank: undefined,
         tier: undefined,
         leaguePoints: undefined,
+        role: "MID",
     },
     {
         name: "Rozeal",
@@ -83,13 +90,7 @@ let ladder = [
         rank: undefined,
         tier: undefined,
         leaguePoints: undefined,
-    },
-    {
-        name: "NanShen",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
+        role: "BOT",
     },
     {
         name: "ramxix",
@@ -97,6 +98,8 @@ let ladder = [
         rank: undefined,
         tier: undefined,
         leaguePoints: undefined,
+        jungler: true,
+        role: "JUNGLE",
     },
     {
         name: "Artist Diff",
@@ -104,10 +107,35 @@ let ladder = [
         rank: undefined,
         tier: undefined,
         leaguePoints: undefined,
+        role: "BOT",
+    },
+    {
+        name: "ghi frank",
+        id: undefined,
+        rank: undefined,
+        tier: undefined,
+        leaguePoints: undefined,
+        role: "TOP",
+    },
+    {
+        name: "shli7a",
+        id: undefined,
+        rank: undefined,
+        tier: undefined,
+        leaguePoints: undefined,
+        role: "BOT",
+    },
+    {
+        name: "jeu dzab",
+        id: undefined,
+        rank: undefined,
+        tier: undefined,
+        leaguePoints: undefined,
+        role: "MID",
     },
 ];
 
-let updateChannels = ["général"];
+let updateChannels = ["broyz-ladder"];
 
 let running = false;
 
@@ -128,7 +156,7 @@ client.on("messageCreate", (message) => {
     }
 
     if (message.content == "!ladder") {
-        showLadder([message.channel]);
+        showLadder([message.channel.name], "Player Rankings");
     }
 });
 
@@ -136,7 +164,11 @@ async function updateAndShowLadder() {
     await update();
     let ladderLastStateString = JSON.stringify(ladderLastState);
     let ladderString = JSON.stringify(ladder);
-    if (ladderLastStateString !== ladderString) showLadder();
+    if (ladderLastStateString !== ladderString) {
+        showLadder(updateChannels, "Ladder Update");
+
+        logOk("shown ladder");
+    }
 }
 
 async function update() {
@@ -153,11 +185,13 @@ async function update() {
     } catch (error) {
         logE(`An error has occurred in update(): ${error}`);
         if (JSON.parse(JSON.stringify(error)).status == 429) {
-            sendMessage("Rate limit exceeded.");
+            sendMessage(updateChannels, "Rate limit exceeded.");
         }
     }
 
     running = false;
+
+    logOk("updated");
 }
 
 async function updateSummonerData(summoner) {
@@ -196,7 +230,7 @@ async function updateLeagueData(summoner) {
                         summoner.rank = response.data[0].rank;
                     if (response.data[0].tier)
                         summoner.tier = response.data[0].tier;
-                    if (response.data[0].leaguePoints)
+                    if (response.data[0].leaguePoints != undefined)
                         summoner.leaguePoints = response.data[0].leaguePoints;
                 }
             })
@@ -211,10 +245,12 @@ async function updateLeagueData(summoner) {
     }
 }
 
-function showLadder(channels = updateChannels) {
-    var ladderStr = "------------------------------------------\n";
-    ladderStr += "\t\t\t\t\t\tLadder Update\n";
-    ladderStr += "------------------------------------------\n";
+const SEPARATOR = "-------------------------------------------------";
+
+function showLadder(channels, message) {
+    var ladderStr = SEPARATOR + "\n";
+    ladderStr += "\t\t\t\t\t\t\t\t" + message + "\n";
+    ladderStr += SEPARATOR + "\n";
 
     ladder
         .filter((summoner) => summoner.tier != undefined)
@@ -226,14 +262,21 @@ function showLadder(channels = updateChannels) {
                 getPrefix(index) +
                 summoner.name +
                 " " +
-                getEmoji(summoner.tier) +
+                getEmoji(summoner.role) +
                 " " +
-                summoner.tier;
+                summoner.tier +
+                getEmoji(summoner.tier);
             if (isRanked(summoner)) {
                 ladderStr += " " + summoner.rank;
                 ladderStr += " " + summoner.leaguePoints + "LP";
             }
-            let lpChange = getLPChange(ladderLastState[index], summoner);
+            let ladderLastStateOfSummoner = ladderLastState.filter(
+                (s) => s.id === summoner.id
+            )[0];
+            let lpChange = getLPChange(
+                ladderLastStateOfSummoner ? ladderLastStateOfSummoner : {},
+                summoner
+            );
             if (lpChange && lpChange !== 0) {
                 ladderStr +=
                     " " +
@@ -243,9 +286,9 @@ function showLadder(channels = updateChannels) {
             ladderStr += "\n";
         });
 
-    ladderStr += "------------------------------------------";
+    ladderStr += SEPARATOR;
 
-    sendMessage(ladderStr, channels);
+    sendMessage(channels, ladderStr);
 }
 
 function compareSummoners(summoner1, summoner2) {
@@ -292,12 +335,12 @@ function getLPChangeFromTier(tierNew, tierOld) {
     return 400;
 }
 
-function getEmoji(tier) {
-    if (!tier) {
+function getEmoji(name) {
+    if (!name) {
         return "";
     }
     return client.emojis.cache
-        .find((emoji) => emoji.name === tier.toLowerCase())
+        .find((emoji) => emoji.name === name.toLowerCase())
         .toString();
 }
 
@@ -338,7 +381,7 @@ function getPrefix(index) {
     }
 }
 
-function sendMessage(message, channelNames = updateChannels) {
+function sendMessage(channelNames, message) {
     getChannels(channelNames).send(message);
 }
 
