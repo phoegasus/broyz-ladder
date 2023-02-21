@@ -1,7 +1,7 @@
 require("dotenv").config();
 const axios = require("axios");
 const { Client, IntentsBitField } = require("discord.js");
-const { BOT_TOKEN, RIOT_TOKEN } = process.env;
+const { BOT_TOKEN, RIOT_TOKEN, UPDATE_CHANNELS } = process.env;
 
 const client = new Client({
     intents: [
@@ -23,8 +23,8 @@ const RIOT_API_OPTIONS = {
     },
 };
 
-const BOT_UPDATE_INTERVAL = 2 * 60 * 1000;
-const DB_UPDATE_INTERVAL = 10 * BOT_UPDATE_INTERVAL;
+const BOT_UPDATE_INTERVAL = 1 * 60 * 1000;
+let nextUpdate = BOT_UPDATE_INTERVAL;
 
 let ladderLastState = [];
 
@@ -191,9 +191,18 @@ let ladder = [
         role: "SUPPORT",
         inGame: false,
     },
+    {
+        name: "walkwithme",
+        id: undefined,
+        rank: undefined,
+        tier: undefined,
+        leaguePoints: undefined,
+        role: "SUPPORT",
+        inGame: false,
+    },
 ];
 
-let updateChannels = ["broyz-ladder"];
+let updateChannels = UPDATE_CHANNELS.split(",");
 
 let running = false;
 
@@ -202,9 +211,7 @@ client.on("ready", (c) => {
 });
 
 client.on("ready", (c) => {
-    updateAndShowLadder();
-    setInterval(updateAndShowLadder, BOT_UPDATE_INTERVAL);
-    logOk(`Set update interval to ${BOT_UPDATE_INTERVAL}`);
+    loopUpdateAndShowLadder();
 });
 
 client.on("messageCreate", (message) => {
@@ -216,6 +223,12 @@ client.on("messageCreate", (message) => {
         showLadder([message.channel.name], "Player Rankings");
     }
 });
+
+async function loopUpdateAndShowLadder() {
+    await updateAndShowLadder();
+    setTimeout(loopUpdateAndShowLadder, nextUpdate);
+    nextUpdate = BOT_UPDATE_INTERVAL;
+}
 
 async function updateAndShowLadder() {
     await update();
@@ -246,6 +259,7 @@ async function update() {
         logE(`An error has occurred in update(): ${error}`);
         if (JSON.parse(JSON.stringify(error)).status == 429) {
             sendMessage(updateChannels, "Rate limit exceeded.");
+            nextUpdate = 2 * 60 * 1000;
         }
     }
 
@@ -273,6 +287,9 @@ async function updateSummonerData(summoner) {
         logE(
             `An error has occurred in updateSummonerData(${summoner}): ${error}`
         );
+        if (JSON.parse(JSON.stringify(error)).status == 429) {
+            throw error;
+        }
     }
 }
 
@@ -303,6 +320,9 @@ async function updateLeagueData(summoner) {
         logE(
             `An error has occurred in updateLeagueData(${summoner}): ${error}`
         );
+        if (JSON.parse(JSON.stringify(error)).status == 429) {
+            throw error;
+        }
     }
 }
 
@@ -342,7 +362,9 @@ async function updateLiveGames(summoner) {
             });
     } catch (error) {
         logE(`An error has occurred in updateLiveGames(${summoner}): ${error}`);
-        throw error;
+        if (JSON.parse(JSON.stringify(error)).status == 429) {
+            throw error;
+        }
     }
 }
 
@@ -350,9 +372,14 @@ const SEPARATOR =
     "---------------------------------------------------------------------";
 
 function showLadder(channels, message) {
-    var ladderStr = SEPARATOR + "\n";
-    ladderStr += "\t\t\t\t\t\t\t\t\t\t\t\t" + message + "\n";
-    ladderStr += SEPARATOR + "\n";
+    let messagesToSend = [];
+
+    var headerStr = SEPARATOR + "\n";
+    headerStr += "\t\t\t\t\t\t\t\t\t\t\t\t" + message + "\n";
+    headerStr += SEPARATOR + "";
+    messagesToSend.push(headerStr);
+
+    var ladderStr = "";
 
     ladder
         .filter((summoner) => summoner.tier != undefined)
@@ -360,6 +387,10 @@ function showLadder(channels, message) {
             compareSummoners(summoner1, summoner2) ? -1 : 1
         )
         .forEach((summoner, index) => {
+            if (index % 10 == 0 && index != 0) {
+                messagesToSend.push(ladderStr);
+                ladderStr = "";
+            }
             ladderStr +=
                 getPrefix(index) +
                 summoner.name +
@@ -399,9 +430,12 @@ function showLadder(channels, message) {
             ladderStr += "\n";
         });
 
-    ladderStr += SEPARATOR;
+    messagesToSend.push(ladderStr);
 
-    sendMessage(channels, ladderStr);
+    var footerStr = SEPARATOR;
+    messagesToSend.push(footerStr);
+
+    messagesToSend.forEach((message) => sendMessage(channels, message));
 }
 
 function compareSummoners(summoner1, summoner2) {
