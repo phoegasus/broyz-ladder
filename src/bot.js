@@ -23,182 +23,105 @@ const RIOT_API_OPTIONS = {
     },
 };
 
-const BOT_UPDATE_INTERVAL = 1 * 60 * 1000;
+const BOT_UPDATE_INTERVAL = 2 * 60 * 1000;
 let nextUpdate = BOT_UPDATE_INTERVAL;
 
 let ladderLastState = [];
 
 let ladder = [
     {
+        name: "KC El Pape",
+        role: "MID",
+    },
+    {
+        name: "Sal Terrae",
+        role: "MID",
+    },
+    {
+        name: "09 01 99",
+        role: "TOP",
+    },
+    {
+        name: "kevoe",
+        role: "JUNGLE",
+    },
+    {
         name: "Ragequiiit",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "SUPPORT",
-        inGame: false,
     },
     {
         name: "Shaeee",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "JUNGLE",
-        inGame: false,
     },
     {
         name: "PIRATE FRANK",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "TOP",
-        inGame: false,
     },
     {
         name: "Just Gank 4Head",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "JUNGLE",
-        inGame: false,
     },
     {
         name: "yarbinmot",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "TOP",
-        inGame: false,
     },
     {
         name: "Hakuyu",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "JUNGLE",
-        inGame: false,
     },
     {
         name: "Shocksnock",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "MID",
-        inGame: false,
+        isGM: true,
     },
     {
         name: "Rozeal",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "BOT",
-        inGame: false,
     },
     {
         name: "ramxix",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "JUNGLE",
-        inGame: false,
     },
     {
         name: "Artist Diff",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "BOT",
-        inGame: false,
     },
     {
         name: "ghi frank",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "TOP",
-        inGame: false,
     },
     {
         name: "shli7a",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "BOT",
-        inGame: false,
     },
     {
         name: "jeu dzab",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "MID",
-        inGame: false,
+        isGM: true,
     },
     {
         name: "Xartos",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "BOT",
-        inGame: false,
     },
     {
         name: "Spookky",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "SUPPORT",
-        inGame: false,
     },
     {
         name: "NanShen",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "TOP",
-        inGame: false,
     },
     {
         name: "Maes277",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "SUPPORT",
-        inGame: false,
     },
     {
         name: "SP Mokzs",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "SUPPORT",
-        inGame: false,
     },
     {
         name: "walkwithme",
-        id: undefined,
-        rank: undefined,
-        tier: undefined,
-        leaguePoints: undefined,
         role: "SUPPORT",
-        inGame: false,
     },
 ];
 
@@ -311,6 +234,11 @@ async function updateLeagueData(summoner) {
                         summoner.tier = response.data[0].tier;
                     if (response.data[0].leaguePoints != undefined)
                         summoner.leaguePoints = response.data[0].leaguePoints;
+                    if (
+                        response.data[0].miniSeries &&
+                        response.data[0].miniSeries.progress
+                    )
+                        summoner.promo = response.data[0].miniSeries.progress;
                 }
             })
             .catch((error) => {
@@ -395,15 +323,20 @@ function showLadder(channels, message) {
                 getPrefix(index) +
                 summoner.name +
                 " " +
-                getEmoji(summoner.role) +
-                " " +
+                getEmoji(summoner.role.toLowerCase()) +
+                " - " +
                 summoner.tier;
             if (summoner.rank) {
                 ladderStr += " " + summoner.rank;
             }
-            ladderStr += getEmoji(summoner.tier);
+            ladderStr += getEmoji(
+                summoner.isGM ? "grandmaster" : summoner.tier.toLowerCase()
+            );
             if (summoner.leaguePoints != undefined) {
                 ladderStr += " " + summoner.leaguePoints + "LP";
+            }
+            if (summoner.promo) {
+                ladderStr += " " + getPromoEmojis(summoner.promo) + " ";
             }
             let ladderLastStateOfSummoner = ladderLastState.filter(
                 (s) => s.id === summoner.id
@@ -419,7 +352,7 @@ function showLadder(channels, message) {
                     lpChange;
             }
             if (summoner.inGame) {
-                ladderStr += " - :red_circle: IN GAME";
+                ladderStr += " -  :red_circle: IN GAME";
                 if (summoner.with.length > 0) {
                     ladderStr += " with";
                     for (const name of summoner.with) {
@@ -436,6 +369,24 @@ function showLadder(channels, message) {
     messagesToSend.push(footerStr);
 
     messagesToSend.forEach((message) => sendMessage(channels, message));
+}
+
+function getPromoEmojis(progress) {
+    if (!progress) {
+        return "";
+    }
+
+    return progress
+        .split("")
+        .map((gameResult) => getGameResultEmoji(gameResult))
+        .join("");
+}
+
+function getGameResultEmoji(gameResult) {
+    if (gameResult != "W" && gameResult != "L" && gameResult != "N") {
+        return "";
+    }
+    return getEmoji("game" + gameResult);
 }
 
 function compareSummoners(summoner1, summoner2) {
@@ -486,9 +437,7 @@ function getEmoji(name) {
     if (!name) {
         return "";
     }
-    return client.emojis.cache
-        .find((emoji) => emoji.name === name.toLowerCase())
-        .toString();
+    return client.emojis.cache.find((emoji) => emoji.name === name).toString();
 }
 
 const TIERS = [
@@ -541,7 +490,17 @@ function getChannels(channelNames) {
 function now() {
     let currentDate = new Date();
 
-    return `[${currentDate.getUTCDate()}/${currentDate.getUTCMonth()}/${currentDate.getUTCFullYear()} ${currentDate.getUTCHours()}:${currentDate.getUTCMinutes()}:${currentDate.getUTCSeconds()}]`;
+    return `[${padDateElement(currentDate.getUTCDate())}/${padDateElement(
+        currentDate.getUTCMonth()
+    )}/${currentDate.getUTCFullYear()} ${padDateElement(
+        currentDate.getUTCHours()
+    )}:${padDateElement(currentDate.getUTCMinutes())}:${padDateElement(
+        currentDate.getUTCSeconds()
+    )}]`;
+}
+
+function padDateElement(n) {
+    return String(n).padStart(2, "0");
 }
 
 function logE(message) {
