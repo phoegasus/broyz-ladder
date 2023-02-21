@@ -1,7 +1,15 @@
 require("dotenv").config();
+const { TIERS, DIVIDED_TIERS, RANKS } = require("./data/ranks.js");
+const {
+    RIOT_SERVER_URL,
+    RIOT_SUMMONER_ENDPOINT,
+    RIOT_LEAGUE_ENDPOINT,
+    RIOT_SPECTATOR_ENDPOINT,
+} = require("./data/riotapi.js");
 const axios = require("axios");
 const { Client, IntentsBitField } = require("discord.js");
 const { BOT_TOKEN, RIOT_TOKEN, UPDATE_CHANNELS } = process.env;
+const { logOk, log, logE } = require("./utils/log.js");
 
 const client = new Client({
     intents: [
@@ -12,12 +20,7 @@ const client = new Client({
     ],
 });
 
-const RIOT_SERVER_URL = "https://euw1.api.riotgames.com";
-const RIOT_SUMMONER_ENDPOINT = "/lol/summoner/v4/summoners/by-name/";
-const RIOT_LEAGUE_ENDPOINT = "/lol/league/v4/entries/by-summoner/";
-const RIOT_SPECTATOR_ENDPOINT = "/lol/spectator/v4/active-games/by-summoner/";
-
-const RIOT_API_OPTIONS = {
+const OPTIONS = {
     headers: {
         "X-Riot-Token": RIOT_TOKEN,
     },
@@ -289,11 +292,12 @@ async function updateSummonerData(summoner) {
         await axios
             .get(
                 RIOT_SERVER_URL + RIOT_SUMMONER_ENDPOINT + summoner.name,
-                RIOT_API_OPTIONS
+                OPTIONS
             )
             .then((response) => {
                 summoner.name = response.data.name;
                 summoner.id = response.data.id;
+                summoner.puuid = response.data.puuid;
             })
             .catch((error) => {
                 throw error;
@@ -320,10 +324,7 @@ async function updateLeagueData(summoner) {
     log(`updateLeagueData(${summoner.name})`);
     try {
         await axios
-            .get(
-                RIOT_SERVER_URL + RIOT_LEAGUE_ENDPOINT + summoner.id,
-                RIOT_API_OPTIONS
-            )
+            .get(RIOT_SERVER_URL + RIOT_LEAGUE_ENDPOINT + summoner.id, OPTIONS)
             .then((response) => {
                 if (response.data.length == 0) {
                     summoner.tier = "UNRANKED";
@@ -371,7 +372,7 @@ async function updateLiveGames(summoner) {
         await axios
             .get(
                 RIOT_SERVER_URL + RIOT_SPECTATOR_ENDPOINT + summoner.id,
-                RIOT_API_OPTIONS
+                OPTIONS
             )
             .then((response) => {
                 if (
@@ -537,10 +538,6 @@ function getLPChange(summonerOld, summonerNew) {
     return change;
 }
 
-function isRanked(summoner) {
-    return summoner.rank && summoner.tier;
-}
-
 function getLPChangeFromTier(tierNew, tierOld) {
     if (!DIVIDED_TIERS.includes(tierNew) && !DIVIDED_TIERS.includes(tierOld))
         return 0;
@@ -552,36 +549,16 @@ function getLPChangeFromTier(tierNew, tierOld) {
     return 400;
 }
 
+function isRanked(summoner) {
+    return summoner.rank && summoner.tier;
+}
+
 function getEmoji(name) {
     if (!name) {
         return "";
     }
     return client.emojis.cache.find((emoji) => emoji.name === name).toString();
 }
-
-const TIERS = [
-    "CHALLENGER",
-    "GRANDMASTER",
-    "MASTER",
-    "DIAMOND",
-    "PLATINUM",
-    "GOLD",
-    "SILVER",
-    "BRONZE",
-    "IRON",
-    "UNRANKED",
-];
-
-const DIVIDED_TIERS = [
-    "DIAMOND",
-    "PLATINUM",
-    "GOLD",
-    "SILVER",
-    "BRONZE",
-    "IRON",
-];
-
-const RANKS = ["I", "II", "III", "IV"];
 
 function getPrefix(index) {
     switch (index) {
@@ -604,34 +581,6 @@ function getChannels(channelNames) {
     return client.channels.cache.find((channel) =>
         channelNames.includes(channel.name)
     );
-}
-
-function now() {
-    let currentDate = new Date();
-
-    return `[${padDateElement(currentDate.getUTCDate())}/${padDateElement(
-        currentDate.getUTCMonth()
-    )}/${currentDate.getUTCFullYear()} ${padDateElement(
-        currentDate.getUTCHours()
-    )}:${padDateElement(currentDate.getUTCMinutes())}:${padDateElement(
-        currentDate.getUTCSeconds()
-    )}]`;
-}
-
-function padDateElement(n) {
-    return String(n).padStart(2, "0");
-}
-
-function logE(message) {
-    console.log(`${now()} 🛑 ${message}`);
-}
-
-function log(message) {
-    console.log(`${now()} ${message}`);
-}
-
-function logOk(message) {
-    console.log(`${now()} ✅ ${message}`);
 }
 
 client.login(BOT_TOKEN);
