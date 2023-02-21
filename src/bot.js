@@ -266,8 +266,10 @@ async function update() {
     try {
         ladderLastState = JSON.parse(JSON.stringify(ladder));
         await updateAllSummonerData();
-        await updateAllLeagueData();
-        await updateAllLiveGames();
+        for (const summoner of ladder) {
+            await updateLeagueData(summoner);
+            await updateLiveGames(summoner);
+        }
     } catch (error) {
         logE(`An error has occurred in update(): ${error}`);
         if (JSON.parse(JSON.stringify(error)).status == 429) {
