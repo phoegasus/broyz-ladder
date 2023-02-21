@@ -107,6 +107,10 @@ let ladder = [
         name: "walkwithme",
         role: "SUPPORT",
     },
+    {
+        name: "kimightem",
+        role: "TOP",
+    },
 ];
 
 let updateChannels = UPDATE_CHANNELS.split(",");
