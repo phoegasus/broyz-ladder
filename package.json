@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/bot.js",
   "scripts": {
-    "start": "node ."
+    "start": "node ./src/bot.js"
   },
   "keywords": [],
   "author": "Phoegasus",
