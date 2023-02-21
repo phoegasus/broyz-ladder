@@ -23,28 +23,12 @@ const RIOT_API_OPTIONS = {
     },
 };
 
-const BOT_UPDATE_INTERVAL = 2 * 60 * 1000;
+const BOT_UPDATE_INTERVAL = 1 * 60 * 1000;
 let nextUpdate = BOT_UPDATE_INTERVAL;
 
 let ladderLastState = [];
 
 let ladder = [
-    {
-        name: "KC El Pape",
-        role: "MID",
-    },
-    {
-        name: "Sal Terrae",
-        role: "MID",
-    },
-    {
-        name: "09 01 99",
-        role: "TOP",
-    },
-    {
-        name: "kevoe",
-        role: "JUNGLE",
-    },
     {
         name: "Ragequiiit",
         role: "SUPPORT",
@@ -134,7 +118,7 @@ client.on("ready", (c) => {
 });
 
 client.on("ready", (c) => {
-    loopUpdateAndShowLadder();
+    init();
 });
 
 client.on("messageCreate", (message) => {
@@ -146,6 +130,11 @@ client.on("messageCreate", (message) => {
         showLadder([message.channel.name], "Player Rankings");
     }
 });
+
+async function init() {
+    await updateAllSummonerData();
+    loopUpdateAndShowLadder();
+}
 
 async function loopUpdateAndShowLadder() {
     await updateAndShowLadder();
@@ -171,13 +160,9 @@ async function update() {
 
     try {
         ladderLastState = JSON.parse(JSON.stringify(ladder));
-        for (let summoner of ladder) {
-            if (!summoner.id) {
-                await updateSummonerData(summoner);
-            }
-            await updateLeagueData(summoner);
-            await updateLiveGames(summoner);
-        }
+        await updateAllSummonerData();
+        await updateAllLeagueData();
+        await updateAllLiveGames();
     } catch (error) {
         logE(`An error has occurred in update(): ${error}`);
         if (JSON.parse(JSON.stringify(error)).status == 429) {
@@ -216,6 +201,14 @@ async function updateSummonerData(summoner) {
     }
 }
 
+async function updateAllSummonerData() {
+    for (let summoner of ladder) {
+        if (!summoner.id) {
+            await updateSummonerData(summoner);
+        }
+    }
+}
+
 async function updateLeagueData(summoner) {
     log(`updateLeagueData(${summoner.name})`);
     try {
@@ -237,8 +230,11 @@ async function updateLeagueData(summoner) {
                     if (
                         response.data[0].miniSeries &&
                         response.data[0].miniSeries.progress
-                    )
+                    ) {
                         summoner.promo = response.data[0].miniSeries.progress;
+                    } else {
+                        summoner.promo = undefined;
+                    }
                 }
             })
             .catch((error) => {
@@ -250,6 +246,14 @@ async function updateLeagueData(summoner) {
         );
         if (JSON.parse(JSON.stringify(error)).status == 429) {
             throw error;
+        }
+    }
+}
+
+async function updateAllLeagueData() {
+    for (let summoner of ladder) {
+        if (summoner.id) {
+            await updateLeagueData(summoner);
         }
     }
 }
@@ -292,6 +296,14 @@ async function updateLiveGames(summoner) {
         logE(`An error has occurred in updateLiveGames(${summoner}): ${error}`);
         if (JSON.parse(JSON.stringify(error)).status == 429) {
             throw error;
+        }
+    }
+}
+
+async function updateAllLiveGames() {
+    for (let summoner of ladder) {
+        if (summoner.id) {
+            await updateLiveGames(summoner);
         }
     }
 }
