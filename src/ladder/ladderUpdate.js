@@ -93,19 +93,23 @@ async function updateLeagueData(summoner) {
                 if (response.data.length == 0) {
                     summoner.tier = "UNRANKED";
                 } else {
-                    if (response.data[0].rank)
-                        summoner.rank = response.data[0].rank;
-                    if (response.data[0].tier)
-                        summoner.tier = response.data[0].tier;
-                    if (response.data[0].leaguePoints != undefined)
-                        summoner.leaguePoints = response.data[0].leaguePoints;
-                    if (
-                        response.data[0].miniSeries &&
-                        response.data[0].miniSeries.progress
-                    ) {
-                        summoner.promo = response.data[0].miniSeries.progress;
-                    } else {
-                        summoner.promo = undefined;
+                    const filteredData = response.data.filter(
+                        (data) => data.queueType === "RANKED_SOLO_5x5"
+                    );
+                    if (filteredData.length > 0) {
+                        const rankedData = filteredData[0];
+                        if (rankedData.rank) summoner.rank = rankedData.rank;
+                        if (rankedData.tier) summoner.tier = rankedData.tier;
+                        if (rankedData.leaguePoints != undefined)
+                            summoner.leaguePoints = rankedData.leaguePoints;
+                        if (
+                            rankedData.miniSeries &&
+                            rankedData.miniSeries.progress
+                        ) {
+                            summoner.promo = rankedData.miniSeries.progress;
+                        } else {
+                            summoner.promo = undefined;
+                        }
                     }
                 }
             })

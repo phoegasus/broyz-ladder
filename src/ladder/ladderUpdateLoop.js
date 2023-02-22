@@ -35,6 +35,13 @@ let mainLadder = [
         inGame: false,
         with: [],
     },
+    {
+        name: "Cloud K1",
+        role: "SUPPORT",
+
+        inGame: false,
+        with: [],
+    },
 ];
 
 let ladderLastState = [];
