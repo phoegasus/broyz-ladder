@@ -8,6 +8,7 @@ const axios = require("axios");
 const { logOk, log, logE } = require("../utils/log.js");
 const { sendMessage } = require("../utils/discord/message.js");
 const { RIOT_TOKEN, UPDATE_CHANNELS } = process.env;
+const { mainLadder } = require("./ladderPersistence.js");
 
 const updateChannels = UPDATE_CHANNELS.split(",");
 
@@ -19,7 +20,7 @@ const OPTIONS = {
 
 let running = false;
 
-async function update(mainLadder) {
+async function update() {
     if (running) return false;
 
     running = true;
@@ -27,8 +28,7 @@ async function update(mainLadder) {
     let updateOk = false;
 
     try {
-        ladderLastState = JSON.parse(JSON.stringify(mainLadder));
-        await updateAllSummonerData(mainLadder);
+        await updateAllSummonerData();
         for (const summoner of mainLadder) {
             await updateLeagueData(summoner);
             await updateLiveGames(summoner);
@@ -76,7 +76,7 @@ async function updateSummonerData(summoner) {
     }
 }
 
-async function updateAllSummonerData(mainLadder) {
+async function updateAllSummonerData() {
     for (let summoner of mainLadder) {
         if (!summoner.id) {
             await updateSummonerData(summoner);

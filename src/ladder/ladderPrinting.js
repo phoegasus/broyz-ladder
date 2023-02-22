@@ -2,6 +2,7 @@ const { getEmoji, getPromoEmojis } = require("../utils/discord/emoji.js");
 const { sendMessage } = require("../utils/discord/message.js");
 const { getLPChange, compareSummoners } = require("../utils/league/rank.js");
 const { logOk } = require("../utils/log.js");
+const { ladderLastState } = require("./ladderPersistence.js");
 
 const SEPARATOR =
     "---------------------------------------------------------------------";
