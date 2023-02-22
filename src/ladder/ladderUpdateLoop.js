@@ -2,7 +2,6 @@ const { showLadder } = require("./ladderPrinting.js");
 const { BOT_UPDATE_INTERVAL } = require("../data/config.js");
 const { update, updateAllSummonerData } = require("./ladderUpdate.js");
 const { UPDATE_CHANNELS } = process.env;
-const { log } = require("../utils/log.js");
 
 const updateChannels = UPDATE_CHANNELS.split(",");
 
@@ -60,4 +59,4 @@ async function updateAndShowLadder(mainLadder) {
     }
 }
 
-module.exports = { initLadderUpdateLoop };
+module.exports = { initLadderUpdateLoop, mainLadder };

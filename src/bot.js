@@ -1,9 +1,9 @@
 require("dotenv").config();
-const { BOT_TOKEN, DISCORD_SERVERS } = process.env;
+const { BOT_TOKEN } = process.env;
 const { Client, IntentsBitField } = require("discord.js");
 const { logOk } = require("./utils/log.js");
-const { showLadder } = require("./ladder/ladderPrinting.js");
 const { initLadderUpdateLoop } = require("./ladder/ladderUpdateLoop.js");
+const { registerCommands } = require("./commands/registerCommands");
 
 const client = new Client({
     intents: [
@@ -14,8 +14,6 @@ const client = new Client({
     ],
 });
 
-let allowedServers = DISCORD_SERVERS.split(",");
-
 client.on("ready", (c) => {
     logOk(`${c.user.tag} is online.`);
 });
@@ -24,41 +22,13 @@ client.on("ready", () => {
     init();
 });
 
-const LADDER_COMMAND_SYNTAX = /^!ladder( ((.+,)+|.+))*$/;
-
-client.on("messageCreate", (message) => {
-    if (allowedServers.includes(message.guild.name)) {
-        if (message.author.bot) {
-            return;
-        }
-
-        if (LADDER_COMMAND_SYNTAX.test(message.content)) {
-            let command = message.content.split(" ", 2);
-            if (command.length == 1) {
-                showLadder(
-                    mainLadder,
-                    [message.channel.name],
-                    "Player Rankings"
-                );
-            } else {
-                let names = command[1].toLowerCase().split(",");
-                showLadder(
-                    mainLadder.filter((summoner) =>
-                        names.includes(summoner.name.toLowerCase())
-                    ),
-                    [message.channel.name],
-                    "Player Rankings"
-                );
-            }
-        }
-    }
-});
-
-async function init() {
+function init() {
     initLadderUpdateLoop();
 }
 
 global.client = client;
+
+registerCommands();
 
 client.login(BOT_TOKEN);
 
