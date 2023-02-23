@@ -1,4 +1,4 @@
-const { now } = require("./date.js");
+const { now } = require("./date");
 
 function logE(message) {
     console.log(`${now()} 🛑 ${message}`);

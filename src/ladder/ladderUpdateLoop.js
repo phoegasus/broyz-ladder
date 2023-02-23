@@ -1,8 +1,8 @@
-const { showLadder } = require("./ladderPrinting.js");
-const { BOT_UPDATE_INTERVAL } = require("../data/config.js");
-const { update, updateAllSummonerData } = require("./ladderUpdate.js");
+const { showLadder } = require("./ladderPrinting");
+const { BOT_UPDATE_INTERVAL } = require("../data/config");
+const { update, updateAllSummonerData } = require("./ladderUpdate");
 const { UPDATE_CHANNELS } = process.env;
-let { ladderLastState, mainLadder } = require("./ladderPersistence.js");
+let { setLadderLastState, getMainLadder } = require("./ladderPersistence");
 
 const updateChannels = UPDATE_CHANNELS.split(",");
 
@@ -20,10 +20,11 @@ async function loopUpdateAndShowLadder() {
 }
 
 async function updateAndShowLadder() {
+    let mainLadder = getMainLadder();
     let tempLadderLastState = JSON.parse(JSON.stringify(mainLadder));
     let updateOk = await update();
     if (updateOk) {
-        ladderLastState = tempLadderLastState;
+        setLadderLastState(tempLadderLastState);
 
         let ladderLastStateString = JSON.stringify(ladderLastState);
         let ladderString = JSON.stringify(mainLadder);
@@ -33,4 +34,4 @@ async function updateAndShowLadder() {
     }
 }
 
-module.exports = { initLadderUpdateLoop, ladderLastState };
+module.exports = { initLadderUpdateLoop };

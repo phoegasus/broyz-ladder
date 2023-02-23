@@ -5,10 +5,10 @@ const {
     RIOT_SPECTATOR_ENDPOINT,
 } = require("../data/riotapi");
 const axios = require("axios");
-const { logOk, log, logE } = require("../utils/log.js");
-const { sendMessage } = require("../utils/discord/message.js");
+const { logOk, log, logE } = require("../utils/log");
+const { sendMessage } = require("../utils/discord/message");
 const { RIOT_TOKEN, UPDATE_CHANNELS } = process.env;
-const { mainLadder } = require("./ladderPersistence.js");
+const { getMainLadder } = require("./ladderPersistence");
 
 const updateChannels = UPDATE_CHANNELS.split(",");
 
@@ -26,6 +26,8 @@ async function update() {
     running = true;
 
     let updateOk = false;
+
+    let mainLadder = getMainLadder();
 
     try {
         await updateAllSummonerData();

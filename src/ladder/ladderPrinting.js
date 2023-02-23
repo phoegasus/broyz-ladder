@@ -1,8 +1,8 @@
-const { getEmoji, getPromoEmojis } = require("../utils/discord/emoji.js");
-const { sendMessage } = require("../utils/discord/message.js");
-const { getLPChange, compareSummoners } = require("../utils/league/rank.js");
-const { logOk } = require("../utils/log.js");
-const { ladderLastState } = require("./ladderPersistence.js");
+const { getEmoji, getPromoEmojis } = require("../utils/discord/emoji");
+const { sendMessage } = require("../utils/discord/message");
+const { getLPChange, compareSummoners } = require("../utils/league/rank");
+const { logOk } = require("../utils/log");
+const { getLadderLastState } = require("./ladderPersistence");
 
 const SEPARATOR =
     "---------------------------------------------------------------------";
@@ -48,7 +48,7 @@ function showLadder(ladder, channels, message) {
             if (summoner.promo) {
                 ladderStr += " " + getPromoEmojis(summoner.promo) + " ";
             }
-            let ladderLastStateOfSummoner = ladderLastState.filter(
+            let ladderLastStateOfSummoner = getLadderLastState().filter(
                 (s) => s.id === summoner.id
             )[0];
             let lpChange = getLPChange(

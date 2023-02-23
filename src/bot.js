@@ -1,9 +1,9 @@
 require("dotenv").config();
 const { BOT_TOKEN } = process.env;
 const { Client, IntentsBitField } = require("discord.js");
-const { logOk } = require("./utils/log.js");
-const { loadMainLadder } = require("./ladder/ladderPersistence.js");
-const { initLadderUpdateLoop } = require("./ladder/ladderUpdateLoop.js");
+const { logOk } = require("./utils/log");
+const { loadMainLadder } = require("./ladder/ladderPersistence");
+const { initLadderUpdateLoop } = require("./ladder/ladderUpdateLoop");
 const { registerCommands } = require("./commands/registerCommands");
 
 const client = new Client({
@@ -26,7 +26,7 @@ client.on("ready", () => {
 async function init() {
     await loadMainLadder();
     registerCommands();
-    initLadderUpdateLoop();
+    //initLadderUpdateLoop();
 }
 
 global.client = client;
