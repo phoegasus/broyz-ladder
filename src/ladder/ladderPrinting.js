@@ -27,7 +27,8 @@ function showLadder(ladder, channels, message) {
                 ladderStr = "";
             }
 
-            ladderStr += buildPlayerEntryStr(summoner);
+            ladderStr += buildPlayerEntryStr(summoner, index);
+            ladderStr += "\n";
         });
 
     messagesToSend.push(ladderStr);
@@ -46,7 +47,7 @@ function buildHeaderStr(message) {
     return headerStr;
 }
 
-function buildPlayerEntryStr(summoner) {
+function buildPlayerEntryStr(summoner, index) {
     let playerEntryStr = "";
 
     playerEntryStr +=
@@ -94,8 +95,6 @@ function buildPlayerEntryStr(summoner) {
             }
         }
     }
-
-    playerEntryStr += "\n";
 
     return playerEntryStr;
 }
