@@ -3,6 +3,14 @@ const { ROLES } = require("../data/roles");
 const { log, logOk } = require("../utils/log");
 const { sendMessage } = require("../utils/discord/message");
 const { isRoleSynonym, getRoleForSynonym } = require("../utils/league/role");
+const { getSummonerData } = require("../http/riot");
+const {
+    INVALID_SUMMONER_NAME,
+    INVALID_ROLE,
+    RATE_LIMIT_EXCEEDED,
+    ADDED_TO_LADDER,
+} = require("../data/strings");
+const util = require("util");
 
 const syntax = /^!track .+,.+$/;
 
@@ -15,15 +23,22 @@ async function process(message) {
     const name = summoner[0];
     const role = summoner[1];
     if (!name || name.length == 0) {
-        sendMessage([message.channel.name], "Invalid summoner name");
+        sendMessage([message.channel.name], INVALID_SUMMONER_NAME);
         return;
     }
     if (!role || role.length == 0 || !ROLES.includes(role.toUpperCase())) {
-        sendMessage([message.channel.name], "Invalid role");
+        sendMessage([message.channel.name], INVALID_ROLE);
         return;
     }
 
-    // TODO: validate summoner name
+    const response = await getSummonerData(name);
+
+    if (response.success !== true) {
+        if (response.rateLimitExceeded === true) {
+            sendMessage(message.channel.name, RATE_LIMIT_EXCEEDED);
+        }
+        return;
+    }
 
     if (ROLES.includes(role.toUpperCase())) {
         trackSummoner(
@@ -39,17 +54,14 @@ async function process(message) {
             message.channel.name
         );
     } else {
-        sendMessage(message.channel.name, "Invalid role");
+        sendMessage(message.channel.name, INVALID_ROLE);
     }
 }
 
 function trackSummoner(summoner, messageChannel) {
     addToMainLadder(summoner);
     logOk(`Added ${summoner.name} to ladder`);
-    sendMessage(
-        [messageChannel],
-        `${summoner.name} has been added to the ladder.`
-    );
+    sendMessage([messageChannel], util.format(ADDED_TO_LADDER, summoner.name));
 }
 
 module.exports = { process, syntax };

@@ -1,6 +1,7 @@
 const { showLadder } = require("../ladder/ladderPrinting");
 const { getMainLadder } = require("../ladder/ladderPersistence");
 const { log } = require("../utils/log");
+const { PLAYER_RANKINGS } = require("../data/strings");
 
 const syntax = /^!ladder( ((.+,)+|.+))*$/;
 
@@ -11,7 +12,7 @@ async function process(message) {
 
     let command = message.content.split(" ");
     if (command.length == 1) {
-        showLadder(mainLadder, [message.channel.name], "Player Rankings");
+        showLadder(mainLadder, [message.channel.name], PLAYER_RANKINGS);
     } else {
         command.splice(0, 1);
         let names = command.join(" ").toLowerCase().split(",");
@@ -20,7 +21,7 @@ async function process(message) {
                 names.includes(summoner.name.toLowerCase())
             ),
             [message.channel.name],
-            "Player Rankings"
+            PLAYER_RANKINGS
         );
     }
 }

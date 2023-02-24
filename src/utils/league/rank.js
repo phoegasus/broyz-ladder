@@ -4,7 +4,7 @@ function isRanked(summoner) {
     return summoner.rank && summoner.tier;
 }
 
-function compareSummoners(summoner1, summoner2) {
+function compareSummonersRanks(summoner1, summoner2) {
     let comparison =
         TIERS.indexOf(summoner1.tier) < TIERS.indexOf(summoner2.tier) ||
         (TIERS.indexOf(summoner1.tier) == TIERS.indexOf(summoner2.tier) &&
@@ -21,7 +21,7 @@ function getLPChange(summonerOld, summonerNew) {
         return;
     }
 
-    var change =
+    let change =
         (TIERS.indexOf(summonerNew.tier) - TIERS.indexOf(summonerOld.tier)) *
         -1 *
         getLPChangeFromTier(summonerNew.tier, summonerOld.tier);
@@ -44,4 +44,4 @@ function getLPChangeFromTier(tierNew, tierOld) {
     return 400;
 }
 
-module.exports = { getLPChange, compareSummoners };
+module.exports = { getLPChange, compareSummonersRanks };

@@ -1,15 +1,17 @@
 const { showLadder } = require("./ladderPrinting");
 const { BOT_UPDATE_INTERVAL } = require("../data/config");
-const { update, updateAllSummonerData } = require("./ladderUpdate");
+const { update } = require("./ladderUpdate");
 const { UPDATE_CHANNELS } = process.env;
-let { setLadderLastState, getMainLadder } = require("./ladderPersistence");
-
-const updateChannels = UPDATE_CHANNELS.split(",");
+let {
+    setLadderLastState,
+    getLadderLastState,
+    getMainLadder,
+} = require("./ladderPersistence");
+const { LADDER_UPDATE } = require("../data/strings");
 
 global.nextUpdate = BOT_UPDATE_INTERVAL;
 
 async function initLadderUpdateLoop() {
-    await updateAllSummonerData();
     loopUpdateAndShowLadder();
 }
 
@@ -24,12 +26,11 @@ async function updateAndShowLadder() {
     let tempLadderLastState = JSON.parse(JSON.stringify(mainLadder));
     let updateOk = await update();
     if (updateOk) {
+        let ladderLastStateString = JSON.stringify(getLadderLastState());
         setLadderLastState(tempLadderLastState);
-
-        let ladderLastStateString = JSON.stringify(ladderLastState);
         let ladderString = JSON.stringify(mainLadder);
         if (ladderLastStateString !== ladderString) {
-            showLadder(mainLadder, updateChannels, "Ladder Update");
+            showLadder(mainLadder, UPDATE_CHANNELS.split(","), LADDER_UPDATE);
         }
     }
 }

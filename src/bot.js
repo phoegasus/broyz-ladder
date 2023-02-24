@@ -1,10 +1,15 @@
 require("dotenv").config();
-const { BOT_TOKEN } = process.env;
+const { BOT_TOKEN, HANDLE_UNCAUGHT_EXCEPTIONS } = process.env;
 const { Client, IntentsBitField } = require("discord.js");
 const { logOk } = require("./utils/log");
 const { loadMainLadder } = require("./ladder/ladderPersistence");
 const { initLadderUpdateLoop } = require("./ladder/ladderUpdateLoop");
 const { registerCommands } = require("./commands/registerCommands");
+const {
+    initUncaughtExceptionHandler,
+} = require("./utils/uncaughtExceptionHandler");
+
+if (HANDLE_UNCAUGHT_EXCEPTIONS === "Y") initUncaughtExceptionHandler();
 
 const client = new Client({
     intents: [
@@ -26,7 +31,7 @@ client.on("ready", () => {
 async function init() {
     await loadMainLadder();
     registerCommands();
-    //initLadderUpdateLoop();
+    initLadderUpdateLoop();
 }
 
 global.client = client;

@@ -1,17 +1,22 @@
-function now() {
+const util = require("util");
+const { DATE_FORMAT } = require("../data/strings");
+
+function nowStr() {
     let currentDate = new Date();
 
-    return `[${padDateElement(currentDate.getUTCDate())}/${padDateElement(
-        currentDate.getUTCMonth()
-    )}/${currentDate.getUTCFullYear()} ${padDateElement(
-        currentDate.getUTCHours()
-    )}:${padDateElement(currentDate.getUTCMinutes())}:${padDateElement(
-        currentDate.getUTCSeconds()
-    )}]`;
+    return util.format(
+        `${DATE_FORMAT}`,
+        padDateElement(currentDate.getDate()),
+        padDateElement(currentDate.getMonth()),
+        currentDate.getFullYear(),
+        padDateElement(currentDate.getHours()),
+        padDateElement(currentDate.getMinutes()),
+        padDateElement(currentDate.getSeconds())
+    );
 }
 
 function padDateElement(n) {
     return String(n).padStart(2, "0");
 }
 
-module.exports = { now };
+module.exports = { nowStr };

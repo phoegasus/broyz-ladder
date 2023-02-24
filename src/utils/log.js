@@ -1,15 +1,25 @@
-const { now } = require("./date");
+require("dotenv").config();
+const { LOG_PATH } = process.env;
+const { nowStr } = require("./date");
+const fs = require("fs");
+
+const logFile = fs.createWriteStream(LOG_PATH, { flags: "a" });
 
 function logE(message) {
-    console.log(`${now()} 🛑 ${message}`);
+    logToFileAndConsole(`[${nowStr()}] - 🛑 ${message}`);
 }
 
 function log(message) {
-    console.log(`${now()} ${message}`);
+    logToFileAndConsole(`[${nowStr()}] - ${message}`);
 }
 
 function logOk(message) {
-    console.log(`${now()} ✅ ${message}`);
+    logToFileAndConsole(`[${nowStr()}] - ✅ ${message}`);
+}
+
+function logToFileAndConsole(message) {
+    console.log(message);
+    logFile.write(message + "\n");
 }
 
 module.exports = { logE, log, logOk };
