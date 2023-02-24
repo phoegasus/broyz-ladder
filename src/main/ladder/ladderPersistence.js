@@ -75,3 +75,5 @@ module.exports = {
     persistMainLadder,
     loadMainLadder,
 };
+
+//TODO implement firebase persistence
