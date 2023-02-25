@@ -6,6 +6,7 @@ let {
     setLadderLastState,
     getLadderLastState,
     getMainLadder,
+    persistMainLadder,
 } = require("./ladderPersistence");
 const { LADDER_UPDATE } = require("../data/strings");
 
@@ -30,6 +31,7 @@ async function updateAndShowLadder() {
         setLadderLastState(tempLadderLastState);
         let ladderString = JSON.stringify(mainLadder);
         if (ladderLastStateString !== ladderString) {
+            persistMainLadder();
             showLadder(mainLadder, UPDATE_CHANNELS.split(","), LADDER_UPDATE);
         }
     }

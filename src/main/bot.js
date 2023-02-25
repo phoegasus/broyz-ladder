@@ -8,6 +8,7 @@ const { registerCommands } = require("./commands/registerCommands");
 const {
     initUncaughtExceptionHandler,
 } = require("./utils/uncaughtExceptionHandler");
+const { initFirebaseApp } = require("./firebase/app");
 
 if (HANDLE_UNCAUGHT_EXCEPTIONS === "Y") initUncaughtExceptionHandler();
 
@@ -29,6 +30,7 @@ client.on("ready", () => {
 });
 
 async function init() {
+    await initFirebaseApp();
     await loadMainLadder();
     registerCommands();
     initLadderUpdateLoop();

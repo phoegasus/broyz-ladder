@@ -21,7 +21,9 @@ async function update() {
 
     try {
         for (const summoner of mainLadder) {
-            await updateSummonerData(summoner);
+            if (!summoner.id) {
+                await updateSummonerData(summoner);
+            }
             await updateLeagueData(summoner);
             await updateLiveGames(summoner);
         }
@@ -78,7 +80,7 @@ async function updateLeagueData(summoner) {
                 if (rankedData.miniSeries && rankedData.miniSeries.progress) {
                     summoner.promo = rankedData.miniSeries.progress;
                 } else {
-                    summoner.promo = undefined;
+                    summoner.promo = null;
                 }
             }
         }

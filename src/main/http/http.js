@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { log, logOk, logE } = require("../utils/log");
+const { log, logOk, logE, logToFile } = require("../utils/log");
 
 class HttpResponse {
     constructor(status, headers, data, error) {
@@ -13,7 +13,7 @@ class HttpResponse {
 async function httpGet(url, options) {
     let httpResponse = new HttpResponse();
 
-    log(`http GET to ${url} with options ${JSON.stringify(options)}`);
+    logToFile(`http GET to ${url} with options ${JSON.stringify(options)}`);
 
     await axios
         .get(url, options)
@@ -21,7 +21,7 @@ async function httpGet(url, options) {
             httpResponse.status = response.status;
             httpResponse.headers = response.headers;
             httpResponse.data = response.data;
-            logOk(
+            logToFile(
                 `http GET to ${url} with options ${JSON.stringify(
                     options
                 )} result: ${JSON.stringify(httpResponse)}`
@@ -32,10 +32,10 @@ async function httpGet(url, options) {
             httpResponse.error = error;
             httpResponse.headers = error.headers;
             httpResponse.status = error.status;
-            logE(
+            logToFile(
                 `http GET to ${url} with options ${JSON.stringify(
                     options
-                )} error: ${JSON.stringify(httpResponse)}`
+                )} result: ${JSON.stringify(httpResponse)}`
             );
         });
 

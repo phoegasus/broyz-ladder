@@ -36,23 +36,24 @@ async function process(message) {
     if (response.success !== true) {
         if (response.rateLimitExceeded === true) {
             sendMessage(message.channel.name, RATE_LIMIT_EXCEEDED);
+        } else {
+            sendMessage(message.channel.name, INVALID_SUMMONER_NAME);
         }
         return;
     }
 
+    const summonerData = {
+        name: response.data.name,
+        id: response.data.id,
+        puuid: response.data.puuid,
+    };
+
     if (ROLES.includes(role.toUpperCase())) {
-        trackSummoner(
-            { name: name, role: role.toUpperCase() },
-            message.channel.name
-        );
+        summonerData.role = role.toUpperCase();
+        trackSummoner(summonerData, message.channel.name);
     } else if (isRoleSynonym(role.toUpperCase())) {
-        trackSummoner(
-            {
-                name: name,
-                role: getRoleForSynonym(role).toUpperCase(),
-            },
-            message.channel.name
-        );
+        summonerData.role = getRoleForSynonym(role).toUpperCase();
+        trackSummoner(summonerData, message.channel.name);
     } else {
         sendMessage(message.channel.name, INVALID_ROLE);
     }

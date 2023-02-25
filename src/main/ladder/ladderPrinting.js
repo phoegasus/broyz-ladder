@@ -35,7 +35,9 @@ function showLadder(ladder, channels, message) {
 
     messagesToSend.push(buildFooterStr());
 
-    messagesToSend.forEach((message) => sendMessage(channels, message));
+    messagesToSend.forEach(async function (message) {
+        await sendMessage(channels, message);
+    });
 
     logOk("shown ladder");
 }

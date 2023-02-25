@@ -19,7 +19,11 @@ function logOk(message) {
 
 function logToFileAndConsole(message) {
     console.log(message);
+    logToFile(message);
+}
+
+function logToFile(message) {
     logFile.write(message + "\n");
 }
 
-module.exports = { logE, log, logOk };
+module.exports = { logE, log, logOk, logToFile };
