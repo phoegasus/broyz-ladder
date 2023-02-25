@@ -1,5 +1,3 @@
-const { log } = require("../utils/log");
-
 require("dotenv").config();
 const { ADMINS } = process.env;
 

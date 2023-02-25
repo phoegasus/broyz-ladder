@@ -1,5 +1,5 @@
 const { initializeApp } = require("firebase/app");
-const { logE, log } = require("../utils/log");
+const { logE } = require("../utils/log");
 const { authenticate } = require("./auth");
 const { FIREBASE_CONFIG } = require("./config");
 

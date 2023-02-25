@@ -1,5 +1,4 @@
 const { write, read } = require("../firebase/database");
-const { log } = require("../utils/log");
 
 const LADDER_PATH = "/ladder";
 

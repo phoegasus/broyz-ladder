@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { log, logOk, logE, logToFile } = require("../utils/log");
+const { logToFile } = require("../utils/log");
 
 class HttpResponse {
     constructor(status, headers, data, error) {
