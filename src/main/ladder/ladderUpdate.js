@@ -1,5 +1,5 @@
 const { logOk, log, logE } = require("../utils/log");
-const { sendUpdate } = require("../utils/discord/message");
+const { sendUpdate } = require("../discord/message");
 const { getMainLadder } = require("./ladderPersistence");
 const {
     getSummonerData,

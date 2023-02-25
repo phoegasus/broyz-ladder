@@ -1,8 +1,8 @@
 const { addToMainLadder } = require("../ladder/ladderPersistence");
 const { ROLES } = require("../data/roles");
 const { log, logOk } = require("../utils/log");
-const { sendMessage } = require("../utils/discord/message");
-const { isRoleSynonym, getRoleForSynonym } = require("../utils/league/role");
+const { sendMessage } = require("../discord/message");
+const { isRoleSynonym, getRoleForSynonym } = require("../league/role");
 const { getSummonerData } = require("../http/riot");
 const {
     INVALID_SUMMONER_NAME,

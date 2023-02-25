@@ -1,4 +1,4 @@
-const { ROLE_SYNONYMS } = require("../../data/roles");
+const { ROLE_SYNONYMS } = require("../data/roles");
 
 function getRoleForSynonym(synonym) {
     if (!isRoleSynonym(synonym)) return "";

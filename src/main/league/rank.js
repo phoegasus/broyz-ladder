@@ -1,4 +1,4 @@
-const { TIERS, DIVIDED_TIERS, RANKS } = require("../../data/ranks");
+const { TIERS, DIVIDED_TIERS, RANKS } = require("../data/ranks");
 
 function isRanked(summoner) {
     return summoner.rank && summoner.tier;

@@ -1,6 +1,6 @@
-const { getEmoji } = require("../utils/discord/emoji");
-const { sendMessage } = require("../utils/discord/message");
-const { getLPChange, compareSummonersRanks } = require("../utils/league/rank");
+const { getEmoji } = require("../discord/emoji");
+const { sendMessage } = require("../discord/message");
+const { getLPChange, compareSummonersRanks } = require("../league/rank");
 const { logOk } = require("../utils/log");
 const { getLadderLastState } = require("./ladderPersistence");
 

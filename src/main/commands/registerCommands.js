@@ -2,7 +2,7 @@ const { DISCORD_SERVERS } = process.env;
 const ladderCommand = require("./ladder");
 const track = require("./track");
 const { logOk, log } = require("../utils/log");
-const { isBotAdmin } = require("../utils/discord/botAdmin");
+const { isBotAdmin } = require("../discord/botAdmin");
 
 let commands = [ladderCommand];
 let adminCommands = [track];
