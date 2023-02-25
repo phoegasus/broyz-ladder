@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/bot.js",
   "scripts": {
-    "start": "node ./src/main/bot.js"
+    "start": "node ./src/main/bot.js",
+    "test": "jest"
   },
   "keywords": [],
   "author": "Phoegasus",
