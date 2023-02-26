@@ -1,8 +1,14 @@
 const { getEmoji } = require("../discord/emoji");
 const { sendMessage } = require("../discord/message");
-const { getLPChange, compareSummonersRanks } = require("../league/rank");
+const {
+    getLPChange,
+    compareSummonersRanks,
+    getWinrate,
+} = require("../league/rank");
 const { logOk } = require("../utils/log");
 const { getLadderLastState } = require("./ladderPersistence");
+const util = require("util");
+const { WIN_LOSE_WINRATE_FORMAT } = require("../data/strings");
 
 const SEPARATOR =
     "---------------------------------------------------------------------";
@@ -90,15 +96,12 @@ function buildPlayerEntryStr(summoner, index) {
 
     if (summoner.wins != undefined && summoner.losses != undefined) {
         playerEntryStr += " - ";
-        playerEntryStr += summoner.wins;
-        playerEntryStr += "W ";
-        playerEntryStr += summoner.losses;
-        playerEntryStr += "L ";
-        playerEntryStr += (
-            (summoner.wins / (summoner.wins + summoner.losses)) *
-            100
-        ).toFixed(2);
-        playerEntryStr += "%WR";
+        playerEntryStr += util.format(
+            WIN_LOSE_WINRATE_FORMAT,
+            summoner.wins,
+            summoner.losses,
+            getWinrate(summoner)
+        );
     }
 
     if (summoner.inGame) {

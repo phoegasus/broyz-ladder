@@ -6,6 +6,7 @@ const PLAYER_RANKINGS = "Player Rankings";
 const LADDER_UPDATE = "Ladder Update";
 const DATE_FORMAT = "%s/%s/%s %s:%s:%s";
 const SUMMONER_ALREADY_IN_LADDER = "%s is already in the ladder.";
+const WIN_LOSE_WINRATE_FORMAT = "%sW %sL - %s%%";
 
 module.exports = {
     INVALID_SUMMONER_NAME,
@@ -16,4 +17,5 @@ module.exports = {
     LADDER_UPDATE,
     DATE_FORMAT,
     SUMMONER_ALREADY_IN_LADDER,
+    WIN_LOSE_WINRATE_FORMAT,
 };

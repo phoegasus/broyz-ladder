@@ -44,4 +44,10 @@ function getLPChangeFromTier(tierNew, tierOld) {
     return 400;
 }
 
-module.exports = { getLPChange, compareSummonersRanks };
+function getWinrate(summoner) {
+    return Math.round(
+        (summoner.wins / (summoner.wins + summoner.losses)) * 100
+    );
+}
+
+module.exports = { getLPChange, compareSummonersRanks, getWinrate };
