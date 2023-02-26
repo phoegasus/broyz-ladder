@@ -1,5 +1,6 @@
 const axios = require("axios");
 const { logToFile } = require("../utils/log");
+const { AXIOS_TIMEOUT } = process.env;
 
 class HttpResponse {
     constructor(status, headers, data, error) {
@@ -12,6 +13,8 @@ class HttpResponse {
 
 async function httpGet(url, options) {
     let httpResponse = new HttpResponse();
+
+    options.timeout = AXIOS_TIMEOUT;
 
     logToFile(`http GET to ${url} with options ${JSON.stringify(options)}`);
 
