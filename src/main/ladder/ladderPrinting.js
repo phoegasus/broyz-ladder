@@ -88,6 +88,19 @@ function buildPlayerEntryStr(summoner, index) {
             " " + (lpChange < 0 ? ":arrow_down: " : ":arrow_up: +") + lpChange;
     }
 
+    if (summoner.wins != undefined && summoner.losses != undefined) {
+        playerEntryStr += " - ";
+        playerEntryStr += summoner.wins;
+        playerEntryStr += "W ";
+        playerEntryStr += summoner.losses;
+        playerEntryStr += "L ";
+        playerEntryStr += (
+            (summoner.wins / (summoner.wins + summoner.losses)) *
+            100
+        ).toFixed(2);
+        playerEntryStr += "%WR";
+    }
+
     if (summoner.inGame) {
         playerEntryStr += " -  :red_circle: IN GAME";
         if (summoner.with.length > 0) {
