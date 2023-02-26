@@ -35,7 +35,6 @@ async function updateAndShowLadder() {
             mainLadder
                 .filter((summoner) => summoner.new)
                 .forEach((summoner) => (summoner.new = false));
-            showLadder(mainLadder, UPDATE_CHANNELS.split(","), LADDER_UPDATE);
             setLadderLastState(mainLadder);
             persistMainLadder();
         }
