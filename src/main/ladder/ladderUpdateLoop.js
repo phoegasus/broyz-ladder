@@ -24,13 +24,12 @@ async function loopUpdateAndShowLadder() {
 
 async function updateAndShowLadder() {
     let mainLadder = getMainLadder();
-    let tempLadderLastState = JSON.parse(JSON.stringify(mainLadder));
     let updateOk = await update();
     if (updateOk) {
         let ladderLastStateString = JSON.stringify(getLadderLastState());
-        setLadderLastState(tempLadderLastState);
         let ladderString = JSON.stringify(mainLadder);
         if (ladderLastStateString !== ladderString) {
+            setLadderLastState(mainLadder);
             persistMainLadder();
             showLadder(mainLadder, UPDATE_CHANNELS.split(","), LADDER_UPDATE);
         }

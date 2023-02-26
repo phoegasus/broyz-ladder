@@ -1,4 +1,3 @@
-const { MentionableSelectMenuBuilder } = require("@discordjs/builders");
 const { write, read } = require("../firebase/database");
 
 const LADDER_PATH = "/ladder";
