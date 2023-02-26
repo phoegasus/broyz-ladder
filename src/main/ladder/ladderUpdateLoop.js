@@ -22,8 +22,8 @@ async function loopUpdateAndShowLadder() {
 }
 
 async function updateAndShowLadder() {
-    let mainLadder = getMainLadder();
     let updateOk = await update();
+    let mainLadder = getMainLadder();
     if (updateOk) {
         let ladderLastStateString = JSON.stringify(getLadderLastState());
         let ladderString = JSON.stringify(mainLadder);
@@ -35,7 +35,7 @@ async function updateAndShowLadder() {
             mainLadder
                 .filter((summoner) => summoner.new)
                 .forEach((summoner) => (summoner.new = false));
-            setLadderLastState(mainLadder);
+            setLadderLastState(JSON.parse(ladderString));
             persistMainLadder();
         }
     }
