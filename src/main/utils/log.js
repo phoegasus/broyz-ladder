@@ -1,4 +1,3 @@
-require("dotenv").config();
 const { LOG_PATH } = process.env;
 const { nowStr } = require("./date");
 const fs = require("fs");

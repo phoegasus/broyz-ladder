@@ -1,4 +1,3 @@
-require("dotenv").config();
 const {
     API_KEY,
     AUTH_DOMAIN,

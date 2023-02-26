@@ -1,4 +1,3 @@
-require("dotenv").config();
 const { DATABASE_ROOT_PATH } = process.env;
 const { getDatabase, set, get, child, ref } = require("firebase/database");
 const { logE } = require("../utils/log");

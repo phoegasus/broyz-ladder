@@ -1,7 +1,6 @@
 const { showLadder } = require("./ladderPrinting");
-const { BOT_UPDATE_INTERVAL } = require("../data/config");
 const { update } = require("./ladderUpdate");
-const { UPDATE_CHANNELS } = process.env;
+const { UPDATE_CHANNELS, BOT_UPDATE_INTERVAL } = process.env;
 let {
     setLadderLastState,
     getLadderLastState,
@@ -17,7 +16,7 @@ async function initLadderUpdateLoop() {
 }
 
 async function loopUpdateAndShowLadder() {
-    updateAndShowLadder();
+    await updateAndShowLadder();
     setTimeout(() => loopUpdateAndShowLadder(), global.nextUpdate);
     global.nextUpdate = BOT_UPDATE_INTERVAL;
 }
@@ -36,6 +35,7 @@ async function updateAndShowLadder() {
             mainLadder
                 .filter((summoner) => summoner.new)
                 .forEach((summoner) => (summoner.new = false));
+            showLadder(mainLadder, UPDATE_CHANNELS.split(","), LADDER_UPDATE);
             setLadderLastState(mainLadder);
             persistMainLadder();
         }

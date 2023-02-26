@@ -1,4 +1,3 @@
-require("dotenv").config();
 const { ADMINS } = process.env;
 
 const botAdmins = ADMINS.split(",");
