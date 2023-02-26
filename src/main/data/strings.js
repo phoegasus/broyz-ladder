@@ -5,6 +5,7 @@ const ADDED_TO_LADDER = "%s has been added to the ladder.";
 const PLAYER_RANKINGS = "Player Rankings";
 const LADDER_UPDATE = "Ladder Update";
 const DATE_FORMAT = "%s/%s/%s %s:%s:%s";
+const SUMMONER_ALREADY_IN_LADDER = "%s is already in the ladder.";
 
 module.exports = {
     INVALID_SUMMONER_NAME,
@@ -14,4 +15,5 @@ module.exports = {
     PLAYER_RANKINGS,
     LADDER_UPDATE,
     DATE_FORMAT,
+    SUMMONER_ALREADY_IN_LADDER,
 };

@@ -8,10 +8,7 @@ function getRoleForSynonym(synonym) {
 }
 
 function isRoleSynonym(synonym) {
-    return (
-        ROLE_SYNONYMS.filter((entry) => entry.synonyms.includes(synonym))
-            .length > 0
-    );
+    return ROLE_SYNONYMS.some((entry) => entry.synonyms.includes(synonym));
 }
 
 module.exports = { getRoleForSynonym, isRoleSynonym };

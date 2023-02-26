@@ -1,4 +1,7 @@
-const { addToMainLadder } = require("../ladder/ladderPersistence");
+const {
+    addToMainLadder,
+    getMainLadder,
+} = require("../ladder/ladderPersistence");
 const { ROLES } = require("../data/roles");
 const { log, logOk } = require("../utils/log");
 const { sendMessage } = require("../discord/message");
@@ -9,6 +12,7 @@ const {
     INVALID_ROLE,
     RATE_LIMIT_EXCEEDED,
     ADDED_TO_LADDER,
+    SUMMONER_ALREADY_IN_LADDER,
 } = require("../data/strings");
 const util = require("util");
 
@@ -40,9 +44,9 @@ async function process(message) {
 
     if (response.success !== true) {
         if (response.rateLimitExceeded === true) {
-            sendMessage(message.channel.name, RATE_LIMIT_EXCEEDED);
+            sendMessage([message.channel.name], RATE_LIMIT_EXCEEDED);
         } else {
-            sendMessage(message.channel.name, INVALID_SUMMONER_NAME);
+            sendMessage([message.channel.name], INVALID_SUMMONER_NAME);
         }
         return;
     }
@@ -50,16 +54,26 @@ async function process(message) {
     const summonerData = {
         name: response.data.name,
         id: response.data.id,
+        puuid: response.data.puuid,
+        new: true,
     };
+
+    if (getMainLadder().some((summoner) => summoner.id == summonerData.id)) {
+        sendMessage(
+            [message.channel.name],
+            util.format(SUMMONER_ALREADY_IN_LADDER, summonerData.name)
+        );
+        return;
+    }
 
     if (ROLES.includes(role.toUpperCase())) {
         summonerData.role = role.toUpperCase();
         trackSummoner(summonerData, message.channel.name);
     } else if (isRoleSynonym(role.toUpperCase())) {
-        summonerData.role = getRoleForSynonym(role).toUpperCase();
+        summonerData.role = getRoleForSynonym(role.toUpperCase());
         trackSummoner(summonerData, message.channel.name);
     } else {
-        sendMessage(message.channel.name, INVALID_ROLE);
+        sendMessage([message.channel.name], INVALID_ROLE);
     }
 }
 

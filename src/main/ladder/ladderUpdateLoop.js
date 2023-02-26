@@ -28,7 +28,13 @@ async function updateAndShowLadder() {
     if (updateOk) {
         let ladderLastStateString = JSON.stringify(getLadderLastState());
         let ladderString = JSON.stringify(mainLadder);
-        if (ladderLastStateString !== ladderString) {
+        if (
+            ladderLastStateString !== ladderString ||
+            mainLadder.some((summoner) => summoner.new)
+        ) {
+            mainLadder
+                .filter((summoner) => summoner.new)
+                .forEach((summoner) => (summoner.new = false));
             setLadderLastState(mainLadder);
             persistMainLadder();
             showLadder(mainLadder, UPDATE_CHANNELS.split(","), LADDER_UPDATE);
