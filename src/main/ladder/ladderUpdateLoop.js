@@ -17,7 +17,7 @@ async function initLadderUpdateLoop() {
 }
 
 async function loopUpdateAndShowLadder() {
-    await updateAndShowLadder();
+    updateAndShowLadder();
     setTimeout(() => loopUpdateAndShowLadder(), global.nextUpdate);
     global.nextUpdate = BOT_UPDATE_INTERVAL;
 }

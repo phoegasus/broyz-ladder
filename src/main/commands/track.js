@@ -50,7 +50,6 @@ async function process(message) {
     const summonerData = {
         name: response.data.name,
         id: response.data.id,
-        puuid: response.data.puuid,
     };
 
     if (ROLES.includes(role.toUpperCase())) {
