@@ -32,12 +32,12 @@ async function updateAndShowLadder() {
             ladderLastStateString !== ladderString ||
             mainLadder.some((summoner) => summoner.new)
         ) {
+            showLadder(mainLadder, UPDATE_CHANNELS.split(","), LADDER_UPDATE);
             mainLadder
                 .filter((summoner) => summoner.new)
                 .forEach((summoner) => (summoner.new = false));
             setLadderLastState(mainLadder);
             persistMainLadder();
-            showLadder(mainLadder, UPDATE_CHANNELS.split(","), LADDER_UPDATE);
         }
     }
 }
