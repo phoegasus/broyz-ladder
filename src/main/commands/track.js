@@ -26,7 +26,12 @@ async function process(message) {
         sendMessage([message.channel.name], INVALID_SUMMONER_NAME);
         return;
     }
-    if (!role || role.length == 0 || !ROLES.includes(role.toUpperCase())) {
+    if (
+        !role ||
+        role.length == 0 ||
+        !ROLES.includes(role.toUpperCase()) ||
+        !isRoleSynonym(role.toUpperCase())
+    ) {
         sendMessage([message.channel.name], INVALID_ROLE);
         return;
     }
