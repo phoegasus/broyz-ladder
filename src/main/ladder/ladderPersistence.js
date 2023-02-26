@@ -1,3 +1,4 @@
+const { MentionableSelectMenuBuilder } = require("@discordjs/builders");
 const { write, read } = require("../firebase/database");
 
 const LADDER_PATH = "/ladder";
@@ -27,7 +28,10 @@ async function persistMainLadder() {
 }
 
 async function loadMainLadder() {
-    mainLadder = await read(LADDER_PATH);
+    let ladder = await read(LADDER_PATH);
+    if (ladder) {
+        mainLadder = ladder;
+    }
 }
 
 module.exports = {
