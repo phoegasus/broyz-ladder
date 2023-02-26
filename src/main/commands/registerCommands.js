@@ -3,6 +3,7 @@ const ladderCommand = require("./ladder");
 const track = require("./track");
 const { logOk } = require("../utils/log");
 const { isBotAdmin } = require("../discord/botAdmin");
+const { client } = require("../discord/client");
 
 let commands = [ladderCommand];
 let adminCommands = [track];
@@ -14,7 +15,7 @@ let allowedServers = DISCORD_SERVERS.split(",");
 function registerCommands() {
     if (registered) return;
 
-    global.client.on("messageCreate", (message) => {
+    client.on("messageCreate", (message) => {
         if (allowedServers.includes(message.guild.name)) {
             if (message.author.bot) {
                 return;

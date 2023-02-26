@@ -1,10 +1,10 @@
 {
   "name": "broyz-ladder",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "src/bot.js",
   "scripts": {
-    "start": "node ./src/main/bot.js",
+    "start": "npm test && node ./src/main/bot.js",
     "test": "jest"
   },
   "keywords": [],

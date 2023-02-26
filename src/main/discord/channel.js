@@ -1,5 +1,7 @@
+const { client } = require("./client");
+
 function getChannels(channelNames) {
-    return global.client.channels.cache.find((channel) =>
+    return client.channels.cache.find((channel) =>
         channelNames.includes(channel.name)
     );
 }
