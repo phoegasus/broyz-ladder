@@ -17,8 +17,11 @@ async function process(message) {
         command.splice(0, 1);
         let names = command.join(" ").toLowerCase().split(",");
         showLadder(
-            mainLadder.filter((summoner) =>
-                names.includes(summoner.name.toLowerCase())
+            mainLadder.filter(
+                (summoner) =>
+                    names.includes(summoner.name.toLowerCase()) ||
+                    (summoner.alias &&
+                        names.includes(summoner.alias.toLowerCase()))
             ),
             [message.channel.name],
             PLAYER_RANKINGS

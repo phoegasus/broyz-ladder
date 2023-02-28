@@ -1,12 +1,15 @@
-const INVALID_SUMMONER_NAME = "Invalid summoner name";
-const INVALID_ROLE = "Invalid role";
-const RATE_LIMIT_EXCEEDED = "Rate limit exceeded";
+const INVALID_SUMMONER_NAME = "Invalid summoner name.";
+const INVALID_SUMMONER_NAMES = "Invalid summoner name(s).";
+const INVALID_ROLE = "Invalid role.";
+const RATE_LIMIT_EXCEEDED = "Rate limit exceeded.";
 const ADDED_TO_LADDER = "%s has been added to the ladder.";
-const PLAYER_RANKINGS = "Player Rankings";
-const LADDER_UPDATE = "Ladder Update";
+const PLAYER_RANKINGS = "Player Rankings.";
+const LADDER_UPDATE = "Ladder Update.";
 const DATE_FORMAT = "%s/%s/%s %s:%s:%s";
 const SUMMONER_ALREADY_IN_LADDER = "%s is already in the ladder.";
 const WIN_LOSE_WINRATE_FORMAT = "%sW %sL - %s%%";
+const INVALID_ALIAS = "Invalid alias.";
+const SET_ALIAS = "Set alias of %s to %s.";
 
 module.exports = {
     INVALID_SUMMONER_NAME,
@@ -18,4 +21,7 @@ module.exports = {
     DATE_FORMAT,
     SUMMONER_ALREADY_IN_LADDER,
     WIN_LOSE_WINRATE_FORMAT,
+    INVALID_ALIAS,
+    SET_ALIAS,
+    INVALID_SUMMONER_NAMES,
 };
