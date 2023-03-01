@@ -19,29 +19,30 @@ async function update() {
 
     let mainLadder = getMainLadder();
 
-    try {
-        for (const summoner of mainLadder) {
+    for (const summoner of mainLadder) {
+        try {
             if (!summoner.id) {
                 await updateSummonerData(summoner);
             }
             await updateLeagueData(summoner);
             await updateLiveGames(summoner);
-        }
-
-        logOk("updated");
-
-        updateOk = true;
-    } catch (responseWithError) {
-        logE(
-            `An error has occurred in update(): ${JSON.stringify(
-                responseWithError.error
-            )}`
-        );
-        if (responseWithError.rateLimitExceeded === true) {
-            sendUpdate(RATE_LIMIT_EXCEEDED);
-            global.nextUpdate = 2 * 60 * 1000;
+        } catch (responseWithError) {
+            logE(
+                `An error has occurred in update(): ${JSON.stringify(
+                    responseWithError.error
+                )}`
+            );
+            if (responseWithError.rateLimitExceeded === true) {
+                sendUpdate(RATE_LIMIT_EXCEEDED);
+                global.nextUpdate = 2 * 60 * 1000;
+                break;
+            }
         }
     }
+
+    logOk("updated");
+
+    updateOk = true;
 
     running = false;
 
