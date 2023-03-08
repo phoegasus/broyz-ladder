@@ -66,7 +66,6 @@ async function updateLeagueData(summoner) {
     log(`updateLeagueData(${summoner.name})`);
     const response = await getLeagueData(summoner.id);
     if (response.success === true) {
-        summoner.name = response.data.name;
         if (response.data.length == 0) {
             summoner.tier = "UNRANKED";
         } else {
