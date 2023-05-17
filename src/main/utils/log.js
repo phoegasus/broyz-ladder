@@ -2,7 +2,7 @@ const { LOG_PATH } = process.env;
 const { nowStr } = require("./date");
 const fs = require("fs");
 
-const logFile = fs.createWriteStream(LOG_PATH, { flags: "a" });
+let logFile;
 
 function logE(message) {
     logToFileAndConsole(`[${nowStr()}] - 🛑 ${message}`);
@@ -22,7 +22,14 @@ function logToFileAndConsole(message) {
 }
 
 function logToFile(message) {
+    if (!logFile) {
+        initLogFile();
+    }
     logFile.write(message + "\n");
+}
+
+function initLogFile() {
+    logFile = fs.createWriteStream(LOG_PATH, { flags: "a" });
 }
 
 module.exports = { logE, log, logOk, logToFile };

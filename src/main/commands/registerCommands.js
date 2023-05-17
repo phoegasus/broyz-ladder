@@ -1,13 +1,14 @@
 const { DISCORD_SERVERS } = process.env;
 const ladderCommand = require("./ladder");
 const track = require("./track");
+const untrack = require("./untrack");
 const alias = require("./alias");
 const { logOk } = require("../utils/log");
 const { isBotAdmin } = require("../discord/botAdmin");
 const { client } = require("../discord/client");
 
 let commands = [ladderCommand];
-let adminCommands = [track, alias];
+let adminCommands = [track, untrack, alias];
 
 let registered = false;
 

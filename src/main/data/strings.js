@@ -10,6 +10,8 @@ const SUMMONER_ALREADY_IN_LADDER = "%s is already in the ladder.";
 const WIN_LOSE_WINRATE_FORMAT = "%sW %sL - %s%%";
 const INVALID_ALIAS = "Invalid alias.";
 const SET_ALIAS = "Set alias of %s to %s.";
+const REMOVED_FROM_LADDER = "%s has been removed from the ladder.";
+const SUMMONER_NOT_IN_LADDER = "%s is not in the ladder.";
 
 module.exports = {
     INVALID_SUMMONER_NAME,
@@ -24,4 +26,6 @@ module.exports = {
     INVALID_ALIAS,
     SET_ALIAS,
     INVALID_SUMMONER_NAMES,
+    REMOVED_FROM_LADDER,
+    SUMMONER_NOT_IN_LADDER,
 };
