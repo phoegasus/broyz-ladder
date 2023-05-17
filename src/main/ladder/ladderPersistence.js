@@ -22,6 +22,16 @@ function addToMainLadder(summoner) {
     mainLadder.push(summoner);
 }
 
+function removeFromMainLadder(summonerName) {
+    mainLadder.splice(
+        mainLadder.findIndex(
+            (summoner) =>
+                summoner.name.toLowerCase() == summonerName.toLowerCase()
+        ),
+        1
+    );
+}
+
 async function persistMainLadder() {
     await write(LADDER_PATH, mainLadder);
 }
@@ -33,11 +43,17 @@ async function loadMainLadder() {
     }
 }
 
+function resetMainLadder() {
+    mainLadder = [];
+}
+
 module.exports = {
     getMainLadder,
     addToMainLadder,
+    removeFromMainLadder,
     getLadderLastState,
     setLadderLastState,
     persistMainLadder,
     loadMainLadder,
+    resetMainLadder,
 };
