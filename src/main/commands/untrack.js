@@ -40,11 +40,11 @@ async function process(message) {
 }
 
 function untrackSummoner(summonerName, messageChannel) {
-    removeFromMainLadder(summonerName);
-    logOk(`Removed ${summonerName} from ladder`);
+    removedSummoner = removeFromMainLadder(summonerName)[0];
+    logOk(`Removed ${removedSummoner.name} from ladder`);
     sendMessage(
         [messageChannel],
-        util.format(REMOVED_FROM_LADDER, summonerName)
+        util.format(REMOVED_FROM_LADDER, removedSummoner.name)
     );
 }
 

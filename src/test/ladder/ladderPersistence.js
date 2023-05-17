@@ -13,6 +13,10 @@ test("should add and remove summoner from mainLadder", () => {
     let mainLadder = getMainLadder();
     addToMainLadder({ name: "Phoegasus" });
     expect(mainLadder).toStrictEqual([{ name: "Phoegasus" }]);
-    removeFromMainLadder("Phoegasus");
+    expect(removeFromMainLadder("Phoegasus")).toStrictEqual([
+        {
+            name: "Phoegasus",
+        },
+    ]);
     expect(mainLadder).toStrictEqual([]);
 });

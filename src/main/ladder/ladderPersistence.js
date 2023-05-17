@@ -23,7 +23,7 @@ function addToMainLadder(summoner) {
 }
 
 function removeFromMainLadder(summonerName) {
-    mainLadder.splice(
+    return mainLadder.splice(
         mainLadder.findIndex(
             (summoner) =>
                 summoner.name.toLowerCase() == summonerName.toLowerCase()
