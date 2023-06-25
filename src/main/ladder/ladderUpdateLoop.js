@@ -16,9 +16,14 @@ async function initLadderUpdateLoop() {
 }
 
 async function loopUpdateAndShowLadder() {
-    await updateAndShowLadder();
-    setTimeout(() => loopUpdateAndShowLadder(), global.nextUpdate);
-    global.nextUpdate = BOT_UPDATE_INTERVAL;
+    try {
+        await updateAndShowLadder();
+    } catch (error) {
+        throw error;
+    } finally {
+        setTimeout(() => loopUpdateAndShowLadder(), global.nextUpdate);
+        global.nextUpdate = BOT_UPDATE_INTERVAL;
+    }
 }
 
 async function updateAndShowLadder() {
