@@ -15,8 +15,6 @@ async function update() {
 
     running = true;
 
-    let updateOk = false;
-
     let mainLadder = getMainLadder();
 
     for (const summoner of mainLadder) {
@@ -35,18 +33,16 @@ async function update() {
             if (responseWithError.rateLimitExceeded === true) {
                 sendUpdate(RATE_LIMIT_EXCEEDED);
                 global.nextUpdate = 2 * 60 * 1000;
-                break;
+                return false;
             }
         }
     }
 
     logOk("updated");
 
-    updateOk = true;
-
     running = false;
 
-    return updateOk;
+    return true;
 }
 
 async function updateSummonerData(summoner) {
@@ -74,7 +70,8 @@ async function updateLeagueData(summoner) {
             );
             if (filteredData.length > 0) {
                 const rankedData = filteredData[0];
-                if (rankedData.summonerName) summoner.name = rankedData.summonerName;
+                if (rankedData.summonerName)
+                    summoner.name = rankedData.summonerName;
                 if (rankedData.rank) summoner.rank = rankedData.rank;
                 if (rankedData.tier) summoner.tier = rankedData.tier;
                 if (rankedData.leaguePoints != undefined)
