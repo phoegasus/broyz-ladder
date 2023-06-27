@@ -7,7 +7,7 @@ function nowStr() {
     return util.format(
         `${DATE_FORMAT}`,
         padDateElement(currentDate.getDate()),
-        padDateElement(currentDate.getMonth()),
+        padDateElement(currentDate.getMonth() + 1),
         currentDate.getFullYear(),
         padDateElement(currentDate.getHours()),
         padDateElement(currentDate.getMinutes()),
