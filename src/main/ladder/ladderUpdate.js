@@ -1,21 +1,28 @@
 const { logOk, log, logE } = require("../utils/log");
-const { sendUpdate } = require("../discord/message");
 const { getMainLadder } = require("./ladderPersistence");
 const {
     getSummonerData,
     getLeagueData,
     getSpectatorData,
 } = require("../http/riot");
+const { zero } = require("../utils/date");
 const { RATE_LIMIT_EXCEEDED } = require("../data/strings");
 
 let running = false;
 
-async function update() {
-    if (running) return false;
+async function update(now) {
+    if (running) {
+        log(`update() already running`);
+        return;
+    }
 
     running = true;
 
-    let mainLadder = getMainLadder();
+    let mainLadder = getMainLadder()
+        .slice()
+        .sort((summoner1, summoner2) =>
+            compareSummonersLastUpdated(summoner1, summoner2)
+        );
 
     for (const summoner of mainLadder) {
         try {
@@ -24,25 +31,45 @@ async function update() {
             }
             await updateLeagueData(summoner);
             await updateLiveGames(summoner);
+            summoner.lastUpdated = now;
         } catch (responseWithError) {
+            if (responseWithError.rateLimitExceeded === true) {
+                global.nextUpdate = 2 * 60 * 1000;
+                logE(RATE_LIMIT_EXCEEDED);
+                break;
+            }
             logE(
                 `An error has occurred in update(): ${JSON.stringify(
                     responseWithError.error
                 )}`
             );
-            if (responseWithError.rateLimitExceeded === true) {
-                sendUpdate(RATE_LIMIT_EXCEEDED);
-                global.nextUpdate = 2 * 60 * 1000;
-                return false;
-            }
         }
     }
 
     logOk("updated");
 
-    running = false;
+    log(
+        JSON.stringify(
+            mainLadder
+                .sort((summoner1, summoner2) =>
+                    compareSummonersLastUpdated(summoner1, summoner2)
+                )
+                .map((summoner) => {
+                    return `${summoner.name} - ${summoner.lastUpdated}`;
+                })
+        )
+    );
 
-    return true;
+    running = false;
+}
+
+function compareSummonersLastUpdated(summoner1, summoner2) {
+    [summoner1, summoner2].forEach((summoner) => {
+        if (summoner.lastUpdated == undefined) {
+            summoner.lastUpdated = zero();
+        }
+    });
+    return summoner1.lastUpdated - summoner2.lastUpdated;
 }
 
 async function updateSummonerData(summoner) {
