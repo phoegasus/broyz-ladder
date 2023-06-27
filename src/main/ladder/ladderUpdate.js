@@ -18,9 +18,11 @@ async function update(now) {
 
     running = true;
 
-    let mainLadder = getMainLadder().sort((summoner1, summoner2) =>
-        compareSummonersLastUpdated(summoner1, summoner2)
-    );
+    let mainLadder = getMainLadder()
+        .slice()
+        .sort((summoner1, summoner2) =>
+            compareSummonersLastUpdated(summoner1, summoner2)
+        );
 
     for (const summoner of mainLadder) {
         try {
