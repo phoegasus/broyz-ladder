@@ -5,7 +5,7 @@ const {
     compareSummonersRanks,
     getWinrate,
 } = require("../league/rank");
-const { logOk } = require("../utils/log");
+const { log, logOk } = require("../utils/log");
 const { getLadderLastState } = require("./ladderPersistence");
 const util = require("util");
 const { WIN_LOSE_WINRATE_FORMAT } = require("../data/strings");
@@ -106,7 +106,7 @@ function buildPlayerEntryStr(summoner, index) {
 
     if (summoner.inGame) {
         playerEntryStr += " -  :red_circle: IN GAME";
-        if (summoner.with.length > 0) {
+        if (summoner.with && summoner.with.length > 0) {
             playerEntryStr += " with";
             for (const name of summoner.with) {
                 playerEntryStr += " " + name;

@@ -8,6 +8,7 @@ let {
     persistMainLadder,
 } = require("./ladderPersistence");
 const { LADDER_UPDATE } = require("../data/strings");
+const { now } = require("../utils/date");
 
 global.nextUpdate = BOT_UPDATE_INTERVAL;
 
@@ -17,7 +18,7 @@ async function initLadderUpdateLoop() {
 
 async function loopUpdateAndShowLadder() {
     try {
-        await updateAndShowLadder();
+        await updateAndShowLadder(now());
     } catch (error) {
         throw error;
     } finally {
@@ -26,23 +27,21 @@ async function loopUpdateAndShowLadder() {
     }
 }
 
-async function updateAndShowLadder() {
-    let updateOk = await update();
+async function updateAndShowLadder(now) {
+    await update(now);
     let mainLadder = getMainLadder();
-    if (updateOk) {
-        let ladderLastStateString = JSON.stringify(getLadderLastState());
-        let ladderString = JSON.stringify(mainLadder);
-        if (
-            ladderLastStateString !== ladderString ||
-            mainLadder.some((summoner) => summoner.new)
-        ) {
-            showLadder(mainLadder, UPDATE_CHANNELS.split(","), LADDER_UPDATE);
-            mainLadder
-                .filter((summoner) => summoner.new)
-                .forEach((summoner) => (summoner.new = false));
-            setLadderLastState(JSON.parse(ladderString));
-            persistMainLadder();
-        }
+    let ladderLastStateString = JSON.stringify(getLadderLastState());
+    let ladderString = JSON.stringify(mainLadder);
+    if (
+        ladderLastStateString !== ladderString ||
+        mainLadder.some((summoner) => summoner.new)
+    ) {
+        showLadder(mainLadder, UPDATE_CHANNELS.split(","), LADDER_UPDATE);
+        mainLadder
+            .filter((summoner) => summoner.new)
+            .forEach((summoner) => (summoner.new = false));
+        setLadderLastState(JSON.parse(ladderString));
+        persistMainLadder();
     }
 }
 
