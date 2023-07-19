@@ -6,6 +6,7 @@ const ADDED_TO_LADDER = "%s has been added to the ladder.";
 const PLAYER_RANKINGS = "Player Rankings.";
 const LADDER_UPDATE = "Ladder Update.";
 const DATE_FORMAT = "%s/%s/%s %s:%s:%s";
+const DATE_FORMAT_LOG = "%s_%s_%s";
 const SUMMONER_ALREADY_IN_LADDER = "%s is already in the ladder.";
 const WIN_LOSE_WINRATE_FORMAT = "%sW %sL - %s%%";
 const INVALID_ALIAS = "Invalid alias.";
@@ -21,6 +22,7 @@ module.exports = {
     PLAYER_RANKINGS,
     LADDER_UPDATE,
     DATE_FORMAT,
+    DATE_FORMAT_LOG,
     SUMMONER_ALREADY_IN_LADDER,
     WIN_LOSE_WINRATE_FORMAT,
     INVALID_ALIAS,
