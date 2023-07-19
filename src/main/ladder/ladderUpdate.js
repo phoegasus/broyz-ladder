@@ -80,6 +80,11 @@ async function updateLeagueData(summoner) {
     if (response.success === true) {
         if (response.data.length == 0) {
             summoner.tier = "UNRANKED";
+            summoner.rank = null;
+            summoner.leaguePoints = null;
+            summoner.promo = null;
+            summoner.wins = null;
+            summoner.losses = null;
         } else {
             const filteredData = response.data.filter(
                 (data) => data.queueType === "RANKED_SOLO_5x5"
