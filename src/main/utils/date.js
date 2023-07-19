@@ -15,8 +15,20 @@ function nowStr() {
     );
 }
 
+function zero() {
+    return 0;
+}
+
+function now() {
+    return new Date().getTime();
+}
+
+function nowDate() {
+    return new Date(now());
+}
+
 function padDateElement(n) {
     return String(n).padStart(2, "0");
 }
 
-module.exports = { nowStr };
+module.exports = { now, nowStr, zero, nowDate, padDateElement };

@@ -1,8 +1,8 @@
 const { LOG_PATH } = process.env;
-const { nowStr } = require("./date");
+const { nowStr, nowDate, padDateElement } = require("./date");
 const fs = require("fs");
-
-let logFile;
+const util = require("util");
+const { DATE_FORMAT_LOG } = require("../data/strings");
 
 function logE(message) {
     logToFileAndConsole(`[${nowStr()}] - 🛑 ${message}`);
@@ -22,14 +22,28 @@ function logToFileAndConsole(message) {
 }
 
 function logToFile(message) {
-    if (!logFile) {
-        initLogFile();
+    let logWriteStream = getLogWriteStream();
+    try {
+        logWriteStream.write(message + "\n");
+    } finally {
+        logWriteStream.close();
     }
-    logFile.write(message + "\n");
 }
 
-function initLogFile() {
-    logFile = fs.createWriteStream(LOG_PATH, { flags: "a" });
+function getLogWriteStream() {
+    let currentDate = nowDate();
+    return fs.createWriteStream(
+        LOG_PATH.replace(
+            "$date$",
+            util.format(
+                `${DATE_FORMAT_LOG}`,
+                padDateElement(currentDate.getDate()),
+                padDateElement(currentDate.getMonth() + 1),
+                currentDate.getFullYear()
+            )
+        ),
+        { flags: "a" }
+    );
 }
 
 module.exports = { logE, log, logOk, logToFile };
