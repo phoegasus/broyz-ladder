@@ -1,4 +1,5 @@
 const { write, read } = require("../firebase/database");
+const { logOk } = require("../utils/log");
 
 const LADDER_PATH = "/ladder";
 
@@ -34,12 +35,14 @@ function removeFromMainLadder(summonerName) {
 
 async function persistMainLadder() {
     await write(LADDER_PATH, mainLadder);
+    logOk("Main ladder persisted.");
 }
 
 async function loadMainLadder() {
     let ladder = await read(LADDER_PATH);
     if (ladder) {
         mainLadder = ladder;
+        logOk("Main ladder loaded.");
     }
 }
 

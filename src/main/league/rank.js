@@ -5,15 +5,14 @@ function isRanked(summoner) {
 }
 
 function compareSummonersRanks(summoner1, summoner2) {
-    let comparison =
+    return (
         TIERS.indexOf(summoner1.tier) < TIERS.indexOf(summoner2.tier) ||
         (TIERS.indexOf(summoner1.tier) == TIERS.indexOf(summoner2.tier) &&
             RANKS.indexOf(summoner1.rank) < RANKS.indexOf(summoner2.rank)) ||
         (TIERS.indexOf(summoner1.tier) == TIERS.indexOf(summoner2.tier) &&
             RANKS.indexOf(summoner1.rank) == RANKS.indexOf(summoner2.rank) &&
-            summoner1.leaguePoints > summoner2.leaguePoints);
-
-    return comparison;
+            summoner1.leaguePoints > summoner2.leaguePoints)
+    );
 }
 
 function getLPChange(summonerOld, summonerNew) {

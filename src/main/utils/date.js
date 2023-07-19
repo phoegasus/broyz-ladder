@@ -2,12 +2,12 @@ const util = require("util");
 const { DATE_FORMAT } = require("../data/strings");
 
 function nowStr() {
-    let currentDate = new Date();
+    let currentDate = new Date(now());
 
     return util.format(
         `${DATE_FORMAT}`,
         padDateElement(currentDate.getDate()),
-        padDateElement(currentDate.getMonth()),
+        padDateElement(currentDate.getMonth() + 1),
         currentDate.getFullYear(),
         padDateElement(currentDate.getHours()),
         padDateElement(currentDate.getMinutes()),
