@@ -7,6 +7,7 @@ const {
 } = require("../http/riot");
 const { zero } = require("../utils/date");
 const { RATE_LIMIT_EXCEEDED } = require("../data/strings");
+const { BOT_UPDATE_AFTER_RLE } = process.env;
 
 let running = false;
 
@@ -34,7 +35,7 @@ async function update(now) {
             summoner.lastUpdated = now;
         } catch (responseWithError) {
             if (responseWithError.rateLimitExceeded === true) {
-                global.nextUpdate = 2 * 60 * 1000;
+                global.nextUpdate = BOT_UPDATE_AFTER_RLE;
                 logE(RATE_LIMIT_EXCEEDED);
                 break;
             }
