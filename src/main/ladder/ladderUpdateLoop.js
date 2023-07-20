@@ -30,8 +30,12 @@ async function loopUpdateAndShowLadder() {
 async function updateAndShowLadder(now) {
     await update(now);
     let mainLadder = getMainLadder();
-    let ladderLastStateString = JSON.stringify(getLadderLastState());
-    let ladderString = JSON.stringify(mainLadder);
+    let ladderLastStateString = JSON.stringify(
+        copyLadderAndRemoveLastUpdated(getLadderLastState())
+    );
+    let ladderString = JSON.stringify(
+        copyLadderAndRemoveLastUpdated(mainLadder)
+    );
     if (
         ladderLastStateString !== ladderString ||
         mainLadder.some((summoner) => summoner.new)
@@ -43,6 +47,18 @@ async function updateAndShowLadder(now) {
         setLadderLastState(JSON.parse(ladderString));
         persistMainLadder();
     }
+}
+
+function copyLadderAndRemoveLastUpdated(ladder) {
+    return ladder
+        .slice()
+        .map((summoner) => copySummonerAndRemoveLastUpdated(summoner));
+}
+
+function copySummonerAndRemoveLastUpdated(summoner) {
+    let summonerCopy = JSON.parse(JSON.stringify(summoner));
+    delete summonerCopy.lastUpdated;
+    return summonerCopy;
 }
 
 module.exports = { initLadderUpdateLoop };

@@ -140,7 +140,7 @@ test("LP change from DIAMOND III 70LP to DIAMOND I 20LP should be 150", () => {
     ).toBe(150);
 });
 
-test("LP change from DIAMOND III 70LP to PLATINUM I 20LP should be -250", () => {
+test("LP change from DIAMOND III 70LP to EMERALD I 20LP should be -250", () => {
     expect(
         getLPChange(
             {
@@ -150,19 +150,19 @@ test("LP change from DIAMOND III 70LP to PLATINUM I 20LP should be -250", () => 
             },
             {
                 rank: "I",
-                tier: "PLATINUM",
+                tier: "EMERALD",
                 leaguePoints: 20,
             }
         )
     ).toBe(-250);
 });
 
-test("LP change from PLATINUM I 10LP to DIAMOND III 70LP should be 260", () => {
+test("LP change from EMERALD I 10LP to DIAMOND III 70LP should be 260", () => {
     expect(
         getLPChange(
             {
                 rank: "I",
-                tier: "PLATINUM",
+                tier: "EMERALD",
                 leaguePoints: 10,
             },
             {

@@ -3,6 +3,7 @@ const TIERS = [
     "GRANDMASTER",
     "MASTER",
     "DIAMOND",
+    "EMERALD",
     "PLATINUM",
     "GOLD",
     "SILVER",
@@ -13,6 +14,7 @@ const TIERS = [
 
 const DIVIDED_TIERS = [
     "DIAMOND",
+    "EMERALD",
     "PLATINUM",
     "GOLD",
     "SILVER",

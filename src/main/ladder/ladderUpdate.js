@@ -80,11 +80,11 @@ async function updateLeagueData(summoner) {
     if (response.success === true) {
         if (response.data.length == 0) {
             summoner.tier = "UNRANKED";
-            summoner.rank = null;
-            summoner.leaguePoints = null;
-            summoner.promo = null;
-            summoner.wins = null;
-            summoner.losses = null;
+            delete summoner.rank;
+            delete summoner.leaguePoints;
+            delete summoner.promo;
+            delete summoner.wins;
+            delete summoner.losses;
         } else {
             const filteredData = response.data.filter(
                 (data) => data.queueType === "RANKED_SOLO_5x5"
@@ -100,7 +100,7 @@ async function updateLeagueData(summoner) {
                 if (rankedData.miniSeries && rankedData.miniSeries.progress) {
                     summoner.promo = rankedData.miniSeries.progress;
                 } else {
-                    summoner.promo = null;
+                    delete summoner.promo;
                 }
                 if (rankedData.wins) summoner.wins = rankedData.wins;
                 if (rankedData.losses) summoner.losses = rankedData.losses;
@@ -131,11 +131,11 @@ async function updateLiveGames(summoner) {
                 );
         } else {
             summoner.inGame = false;
-            summoner.with = [];
+            delete summoner.with;
         }
     } else if (response.notFound) {
         summoner.inGame = false;
-        summoner.with = [];
+        delete summoner.with;
     } else {
         throw response;
     }
