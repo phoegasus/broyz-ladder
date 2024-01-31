@@ -15,31 +15,30 @@ let registered = false;
 let allowedServers = DISCORD_SERVERS.split(",");
 
 function registerCommands() {
-    if (registered) return;
+  if (registered) return;
 
-    client.on("messageCreate", (message) => {
-        if (allowedServers.includes(message.guild.name)) {
-            if (message.author.bot) {
-                return;
-            }
+  client.on("messageCreate", (message) => {
+    if (allowedServers.includes(message.guild.name)) {
+      if (message.author.bot) {
+        return;
+      }
 
-            adminCommands.forEach((adminCommand) => {
-                if (isBotAdmin(message.author.id)) {
-                    if (adminCommand.syntax.test(message.content))
-                        adminCommand.process(message);
-                }
-            });
-
-            commands.forEach((command) => {
-                if (command.syntax.test(message.content))
-                    command.process(message);
-            });
+      adminCommands.forEach((adminCommand) => {
+        if (isBotAdmin(message.author.id)) {
+          if (adminCommand.syntax.test(message.content))
+            adminCommand.process(message);
         }
-    });
+      });
 
-    registered = true;
+      commands.forEach((command) => {
+        if (command.syntax.test(message.content)) command.process(message);
+      });
+    }
+  });
 
-    logOk(`Registered commands.`);
+  registered = true;
+
+  logOk(`Registered commands.`);
 }
 
 module.exports = { registerCommands };
