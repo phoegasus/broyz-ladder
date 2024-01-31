@@ -1,4 +1,4 @@
-const RIOT_SERVER_URL = "https://euw1.api.riotgames.com";
+const RIOT_SERVER_URL = "https://{cluster}.api.riotgames.com";
 const RIOT_SUMMONER_ENDPOINT = "/lol/summoner/v4/summoners/by-puuid/{puuid}";
 const RIOT_ACCOUNT_ENDPOINT =
   "/riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}";

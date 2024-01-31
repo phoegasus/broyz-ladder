@@ -27,9 +27,6 @@ async function update(now) {
 
   for (const summoner of mainLadder) {
     try {
-      if (!summoner.id) {
-        await updateSummonerData(summoner);
-      }
       await updateLeagueData(summoner);
       await updateLiveGames(summoner);
       summoner.lastUpdated = now;
@@ -59,18 +56,6 @@ function compareSummonersLastUpdated(summoner1, summoner2) {
     }
   });
   return summoner1.lastUpdated - summoner2.lastUpdated;
-}
-
-async function updateSummonerData(summoner) {
-  log(`updateSummonerData(${summoner.name})`);
-  const response = await getSummonerData(summoner.puuid);
-  if (response.success === true) {
-    summoner.name = response.data.name;
-    summoner.id = response.data.id;
-    logOk(`Updated summoner data for ${summoner.puuid}`);
-  } else {
-    throw response;
-  }
 }
 
 async function updateLeagueData(summoner) {

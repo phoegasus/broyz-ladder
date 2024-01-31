@@ -6,7 +6,7 @@ const { ROLES } = require("../data/roles");
 const { log, logOk } = require("../utils/log");
 const { sendMessage } = require("../discord/message");
 const { isRoleSynonym, getRoleForSynonym } = require("../league/role");
-const { getSummonerData } = require("../http/riot");
+const { getSummonerData, getRiotAccountData } = require("../http/riot");
 const {
   INVALID_SUMMONER_NAME,
   INVALID_ROLE,
@@ -26,7 +26,7 @@ async function process(message) {
   let summoner = command.join(" ").toLowerCase().split(",");
   const name = summoner[0];
   const role = summoner[1];
-  if (!name || name.length == 0) {
+  if (isNameInvalid(name)) {
     sendMessage([message.channel.name], INVALID_SUMMONER_NAME);
     return;
   }
@@ -35,10 +35,27 @@ async function process(message) {
     return;
   }
 
-  const response = await getSummonerData(name);
+  const nameParts = name.split("#");
+  const gameName = nameParts[0];
+  const tagLine = nameParts[1];
 
-  if (response.success !== true) {
-    if (response.rateLimitExceeded === true) {
+  const riotIdResponse = await getRiotAccountData(gameName, tagLine);
+
+  if (riotIdResponse.success !== true) {
+    if (riotIdResponse.rateLimitExceeded === true) {
+      sendMessage([message.channel.name], RATE_LIMIT_EXCEEDED);
+    } else {
+      sendMessage([message.channel.name], INVALID_SUMMONER_NAME);
+    }
+    return;
+  }
+
+  const puuid = riotIdResponse.data.puuid;
+
+  const summonerDataResponse = await getSummonerData(puuid);
+
+  if (summonerDataResponse.success !== true) {
+    if (summonerDataResponse.rateLimitExceeded === true) {
       sendMessage([message.channel.name], RATE_LIMIT_EXCEEDED);
     } else {
       sendMessage([message.channel.name], INVALID_SUMMONER_NAME);
@@ -47,16 +64,16 @@ async function process(message) {
   }
 
   const summonerData = {
-    name: response.data.name,
-    id: response.data.id,
-    puuid: response.data.puuid,
+    name: riotIdResponse.data.gameName + "#" + riotIdResponse.data.tagLine,
+    id: summonerDataResponse.data.id,
+    puuid: puuid,
     new: true,
   };
 
   if (getMainLadder().some((summoner) => summoner.id == summonerData.id)) {
     sendMessage(
       [message.channel.name],
-      util.format(SUMMONER_ALREADY_IN_LADDER, summonerData.name),
+      util.format(SUMMONER_ALREADY_IN_LADDER, summonerData.name)
     );
     return;
   }
@@ -81,7 +98,7 @@ function isRoleInvalid(role) {
 }
 
 function isNameInvalid(name) {
-  return !name || name.length == 0;
+  return !name || name.length == 0 || !name.includes("#");
 }
 
 function trackSummoner(summoner, messageChannel) {

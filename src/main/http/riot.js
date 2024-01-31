@@ -4,9 +4,11 @@ const {
   RIOT_SUMMONER_ENDPOINT,
   RIOT_LEAGUE_ENDPOINT,
   RIOT_SPECTATOR_ENDPOINT,
+  RIOT_ACCOUNT_ENDPOINT,
 } = require("../data/riotapi");
 const { placeholder } = require("../utils/urlPlaceholder");
-const { RIOT_TOKEN } = process.env;
+const { log } = require("../utils/log");
+const { RIOT_TOKEN, RIOT_ACCOUNT_CLUSTER, LEAGUE_API_CLUSTER } = process.env;
 
 const OPTIONS = {
   headers: {
@@ -27,33 +29,40 @@ async function getRiotAccountData(gameName, tagLine) {
   return await riotGet(
     RIOT_ACCOUNT_ENDPOINT.replace(placeholder("gameName"), gameName).replace(
       placeholder("tagLine"),
-      tagLine,
+      tagLine
     ),
+    RIOT_ACCOUNT_CLUSTER
   );
 }
 
 async function getSummonerData(puuid) {
   return await riotGet(
     RIOT_SUMMONER_ENDPOINT.replace(placeholder("puuid"), puuid),
+    LEAGUE_API_CLUSTER
   );
 }
 
 async function getLeagueData(summonerId) {
   return await riotGet(
     RIOT_LEAGUE_ENDPOINT.replace(placeholder("summonerId"), summonerId),
+    LEAGUE_API_CLUSTER
   );
 }
 
 async function getSpectatorData(summonerId) {
   return await riotGet(
     RIOT_SPECTATOR_ENDPOINT.replace(placeholder("summonerId"), summonerId),
+    LEAGUE_API_CLUSTER
   );
 }
 
-async function riotGet(url) {
+async function riotGet(url, cluster) {
   let riotResponse = new RiotResponse();
 
-  const response = await httpGet(RIOT_SERVER_URL + url, OPTIONS);
+  const response = await httpGet(
+    RIOT_SERVER_URL.replace(placeholder("cluster"), cluster) + url,
+    OPTIONS
+  );
 
   riotResponse.data = response.data;
   riotResponse.error = response.error;
@@ -68,4 +77,9 @@ async function riotGet(url) {
   return riotResponse;
 }
 
-module.exports = { getSummonerData, getLeagueData, getSpectatorData };
+module.exports = {
+  getSummonerData,
+  getLeagueData,
+  getSpectatorData,
+  getRiotAccountData,
+};
