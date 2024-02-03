@@ -6,7 +6,7 @@ const {
   getWinrate,
 } = require("../league/rank");
 const { log, logOk } = require("../utils/log");
-const { getLadderLastState } = require("./ladderPersistence");
+const { getLadderLastState, getMainLadder } = require("./ladderPersistence");
 const util = require("util");
 const { WIN_LOSE_WINRATE_FORMAT } = require("../data/strings");
 
@@ -108,8 +108,8 @@ function buildPlayerEntryStr(summoner, index) {
     playerEntryStr += " -  :red_circle: IN GAME";
     if (summoner.with && summoner.with.length > 0) {
       playerEntryStr += " with";
-      for (const name of summoner.with) {
-        playerEntryStr += " " + name;
+      for (const puuid of summoner.with) {
+        playerEntryStr += " " + getSummonerNameByPuuid(puuid);
       }
     }
   }
@@ -150,6 +150,12 @@ function getGameResultEmoji(gameResult) {
     return "";
   }
   return getEmoji("game" + gameResult);
+}
+
+function getSummonerNameByPuuid(puuid) {
+  return (ladderWithParticipant = getMainLadder().find(
+    (summoner) => summoner.puuid == puuid
+  ).name);
 }
 
 module.exports = { showLadder };

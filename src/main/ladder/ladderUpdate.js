@@ -104,12 +104,12 @@ async function updateLiveGames(summoner) {
     ) {
       summoner.inGame = true;
       summoner.with = response.data.participants
-        .map((participant) => participant.summonerName)
-        .filter((name) => name != summoner.name)
-        .filter((name) =>
+        .map((participant) => participant.puuid)
+        .filter((puuid) => puuid != summoner.puuid)
+        .filter((puuid) =>
           getMainLadder()
-            .map((s) => s.name)
-            .includes(name)
+            .map((s) => s.puuid)
+            .includes(puuid)
         );
     } else {
       summoner.inGame = false;
