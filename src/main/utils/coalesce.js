@@ -4,3 +4,5 @@ function coalesce(value, defaultValue) {
   }
   return defaultValue;
 }
+
+module.exports = { coalesce };

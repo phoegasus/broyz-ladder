@@ -1,12 +1,9 @@
 const { logOk, log, logE } = require("../utils/log");
 const { getMainLadder } = require("./ladderPersistence");
-const {
-  getSummonerData,
-  getLeagueData,
-  getSpectatorData,
-} = require("../http/riot");
+const { getLeagueData, getSpectatorData } = require("../http/riot");
 const { zero } = require("../utils/date");
 const { RATE_LIMIT_EXCEEDED } = require("../data/strings");
+const { coalesce } = require("../utils/coalesce");
 const { BOT_UPDATE_AFTER_RLE } = process.env;
 
 let running = false;
