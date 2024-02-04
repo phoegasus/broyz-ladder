@@ -1,12 +1,9 @@
 const { logOk, log, logE } = require("../utils/log");
 const { getMainLadder } = require("./ladderPersistence");
-const {
-  getSummonerData,
-  getLeagueData,
-  getSpectatorData,
-} = require("../http/riot");
+const { getLeagueData, getSpectatorData } = require("../http/riot");
 const { zero } = require("../utils/date");
 const { RATE_LIMIT_EXCEEDED } = require("../data/strings");
+const { coalesce } = require("../utils/coalesce");
 const { BOT_UPDATE_AFTER_RLE } = process.env;
 
 let running = false;
@@ -84,8 +81,8 @@ async function updateLeagueData(summoner) {
         } else {
           delete summoner.promo;
         }
-        if (rankedData.wins) summoner.wins = rankedData.wins;
-        if (rankedData.losses) summoner.losses = rankedData.losses;
+        summoner.wins = coalesce(rankedData.wins, 0);
+        summoner.losses = coalesce(rankedData.losses, 0);
       }
     }
   } else {

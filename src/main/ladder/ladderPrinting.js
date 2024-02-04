@@ -8,7 +8,7 @@ const {
 const { log, logOk } = require("../utils/log");
 const { getLadderLastState, getMainLadder } = require("./ladderPersistence");
 const util = require("util");
-const { WIN_LOSE_WINRATE_FORMAT } = require("../data/strings");
+const { WIN_LOSE_FORMAT, WINRATE_FORMAT } = require("../data/strings");
 
 const SEPARATOR =
   "---------------------------------------------------------------------";
@@ -94,14 +94,16 @@ function buildPlayerEntryStr(summoner, index) {
       " " + (lpChange < 0 ? ":arrow_down: " : ":arrow_up: +") + lpChange;
   }
 
-  if (summoner.wins != undefined && summoner.losses != undefined) {
+  playerEntryStr += " - ";
+  playerEntryStr += util.format(
+    WIN_LOSE_FORMAT,
+    summoner.wins,
+    summoner.losses
+  );
+
+  if (summoner.wins > 0 || summoner.losses > 0) {
     playerEntryStr += " - ";
-    playerEntryStr += util.format(
-      WIN_LOSE_WINRATE_FORMAT,
-      summoner.wins,
-      summoner.losses,
-      getWinrate(summoner)
-    );
+    playerEntryStr += util.format(WINRATE_FORMAT, getWinrate(summoner));
   }
 
   if (summoner.inGame) {
