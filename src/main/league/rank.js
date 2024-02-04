@@ -43,6 +43,12 @@ function getLPChangeFromTier(tierNew, tierOld) {
 }
 
 function getWinrate(summoner) {
+  if (!summoner.losses) {
+    if (summoner.wins && summoner.wins > 0) {
+      return 100;
+    }
+    return 0;
+  }
   return Math.round((summoner.wins / (summoner.wins + summoner.losses)) * 100);
 }
 
