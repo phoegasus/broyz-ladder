@@ -84,8 +84,8 @@ async function updateLeagueData(summoner) {
         } else {
           delete summoner.promo;
         }
-        if (rankedData.wins) summoner.wins = rankedData.wins;
-        if (rankedData.losses) summoner.losses = rankedData.losses;
+        if (rankedData.wins) summoner.wins = coalesce(rankedData.wins, 0);
+        if (rankedData.losses) summoner.losses = coalesce(rankedData.losses, 0);
       }
     }
   } else {

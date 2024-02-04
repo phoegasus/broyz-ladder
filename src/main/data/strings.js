@@ -8,7 +8,8 @@ const LADDER_UPDATE = "Ladder Update.";
 const DATE_FORMAT = "%s/%s/%s %s:%s:%s";
 const DATE_FORMAT_LOG = "%s_%s_%s";
 const SUMMONER_ALREADY_IN_LADDER = "%s is already in the ladder.";
-const WIN_LOSE_WINRATE_FORMAT = "%sW %sL - %s%%";
+const WIN_LOSE_FORMAT = "%sW %sL";
+const WINRATE_FORMAT = "%s%%";
 const INVALID_ALIAS = "Invalid alias.";
 const SET_ALIAS = "Set alias of %s to %s.";
 const REMOVED_FROM_LADDER = "%s has been removed from the ladder.";
@@ -24,7 +25,8 @@ module.exports = {
   DATE_FORMAT,
   DATE_FORMAT_LOG,
   SUMMONER_ALREADY_IN_LADDER,
-  WIN_LOSE_WINRATE_FORMAT,
+  WIN_LOSE_FORMAT,
+  WINRATE_FORMAT,
   INVALID_ALIAS,
   SET_ALIAS,
   INVALID_SUMMONER_NAMES,

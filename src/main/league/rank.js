@@ -1,4 +1,5 @@
 const { TIERS, DIVIDED_TIERS, RANKS } = require("../data/ranks");
+const { log } = require("../utils/log");
 
 function isRanked(summoner) {
   return summoner.rank && summoner.tier;
@@ -43,8 +44,8 @@ function getLPChangeFromTier(tierNew, tierOld) {
 }
 
 function getWinrate(summoner) {
-  if (!summoner.losses) {
-    if (summoner.wins && summoner.wins > 0) {
+  if (summoner.losses === 0) {
+    if (summoner.wins > 0) {
       return 100;
     }
     return 0;

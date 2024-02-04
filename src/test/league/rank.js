@@ -1,6 +1,7 @@
 const {
   compareSummonersRanks,
   getLPChange,
+  getWinrate,
 } = require("../../main/league/rank");
 
 test("DIAMOND > GOLD", () => {
@@ -189,4 +190,31 @@ test("LP change from MASTER 100LP to GRANDMASTER 560LP should be 460", () => {
       }
     )
   ).toBe(460);
+});
+
+test("7W - 0L should be 100% winrate", () => {
+  expect(
+    getWinrate({
+      wins: 7,
+      losses: 0,
+    })
+  ).toBe(100);
+});
+
+test("0W - 7L should be 0% winrate", () => {
+  expect(
+    getWinrate({
+      wins: 0,
+      losses: 7,
+    })
+  ).toBe(0);
+});
+
+test("3W - 1L should be 75% winrate", () => {
+  expect(
+    getWinrate({
+      wins: 3,
+      losses: 1,
+    })
+  ).toBe(75);
 });
