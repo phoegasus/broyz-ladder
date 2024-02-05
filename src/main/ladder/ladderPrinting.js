@@ -94,14 +94,13 @@ function buildPlayerEntryStr(summoner, index) {
       " " + (lpChange < 0 ? ":arrow_down: " : ":arrow_up: +") + lpChange;
   }
 
-  playerEntryStr += " - ";
-  playerEntryStr += util.format(
-    WIN_LOSE_FORMAT,
-    summoner.wins,
-    summoner.losses
-  );
-
   if (summoner.wins > 0 || summoner.losses > 0) {
+    playerEntryStr += " - ";
+    playerEntryStr += util.format(
+      WIN_LOSE_FORMAT,
+      summoner.wins,
+      summoner.losses
+    );
     playerEntryStr += " - ";
     playerEntryStr += util.format(WINRATE_FORMAT, getWinrate(summoner));
   }
